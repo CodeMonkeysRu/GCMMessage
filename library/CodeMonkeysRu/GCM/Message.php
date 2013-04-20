@@ -84,6 +84,11 @@ class Message
 
     public function __construct($registrationIds = null, $data = null, $collapseKey = null)
     {
+        $this->bulkSet($registrationIds, $data, $collapseKey);
+    }
+
+    public function bulkSet($registrationIds = null, $data = null, $collapseKey = null)
+    {
         $this->setRegistrationIds($registrationIds);
         $this->setData($data);
         $this->setCollapseKey($collapseKey);

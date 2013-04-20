@@ -1,7 +1,7 @@
 Google Cloud Messaging (GCM) PHP Server Library
 --------------------------------------------
 
-A PHP library to send messages to devices registered through Google Cloud Messaging.
+A PHP library for sending messages to devices registered through Google Cloud Messaging.
 
 See:
 http://developer.android.com/guide/google/gcm/index.html
@@ -30,7 +30,7 @@ try{
         $invalidRegIds = $response->getInvalidRegistrationIds();
         ...
 
-        //Schedule to resend messages to unavailable
+        //Schedule to resend messages to unavailable devices
         $unavailableIds = $response->getUnavailableRegistrationIds();
         ...
     }

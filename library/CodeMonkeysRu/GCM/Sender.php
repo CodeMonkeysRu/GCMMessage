@@ -32,6 +32,21 @@ class Sender
     }
 
     /**
+     * Send message to GCM without explicitly created message
+     *
+     * @param mixed same params as in Message bulkSet
+     *
+     * @throws \UnexpectedValueException
+     * @return \CodeMonkeysRu\GCM\Response
+     */
+    public function sendMessage()
+    {
+        $message = new \CodeMonkeysRu\GCM\Message();
+        call_user_func_array(array($message, 'bulkSet'), func_get_args());
+        return $this->send($message);
+    }
+
+    /**
      * Send message to GCM
      *
      * @param \CodeMonkeysRu\GCM\Message $message
@@ -45,8 +60,13 @@ class Sender
             throw new Exception("Server API Key not set", Exception::ILLEGAL_API_KEY);
         }
 
-        //TODO: check message length (4k)
-        $data = json_encode($this->formMessageData($message));
+        $rawData = $this->formMessageData($message);
+        if(isset($rawData['data'])){
+            if(strlen(json_encode($rawData['data'])) > 4096){
+                throw new Exception("Data payload is to big (max 4096 bytes)", Exception::MALFORMED_REQUEST);
+            }
+        }
+        $data = json_encode($rawData);
 
         $headers = array(
             'Authorization: key='.$this->serverApiKey,
