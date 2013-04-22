@@ -52,4 +52,9 @@ try {
 
 ```
 
+ChangeLog
+----------------------
+
+* v0.1 - Initial release
+
 Licensed under MIT license.
