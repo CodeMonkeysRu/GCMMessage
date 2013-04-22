@@ -36,7 +36,7 @@ class ResponseTest extends PHPUnit_Framework_TestCase
 
     public function testGetInvalidRegistrationIds()
     {
-        $this->assertEquals(array(3,6), $this->response->getInvalidRegistrationIds());
+        $this->assertEquals(array(3, 6), $this->response->getInvalidRegistrationIds());
     }
 
     public function testGetUnavailableRegistrationIds()

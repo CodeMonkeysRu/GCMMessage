@@ -2,6 +2,7 @@
 
 class SenderTest extends PHPUnit_Framework_TestCase
 {
+
     /**
      * @expectedException \CodeMonkeysRu\GCM\Exception
      * @expectedExceptionCode 1
@@ -21,7 +22,7 @@ class SenderTest extends PHPUnit_Framework_TestCase
     {
         $sender = new \CodeMonkeysRu\GCM\Sender("MY API KEY ))");
         $data = array();
-        for($i = 0; $i < 4096; $i++){
+        for ($i = 0; $i < 4096; $i++) {
             $data['key'.$i] = $i;
         }
         $message = new \CodeMonkeysRu\GCM\Message(array(), $data);

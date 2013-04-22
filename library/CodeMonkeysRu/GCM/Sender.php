@@ -61,8 +61,8 @@ class Sender
         }
 
         $rawData = $this->formMessageData($message);
-        if(isset($rawData['data'])){
-            if(strlen(json_encode($rawData['data'])) > 4096){
+        if (isset($rawData['data'])) {
+            if (strlen(json_encode($rawData['data'])) > 4096) {
                 throw new Exception("Data payload is to big (max 4096 bytes)", Exception::MALFORMED_REQUEST);
             }
         }

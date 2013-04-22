@@ -1,7 +1,8 @@
 <?php
 namespace CodeMonkeysRu\GCM;
 
-class Exception extends \Exception {
+class Exception extends \Exception
+{
 
     const ILLEGAL_API_KEY = 1;
     const AUTHENTICATION_ERROR = 2;

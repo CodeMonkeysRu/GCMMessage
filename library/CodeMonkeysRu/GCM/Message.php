@@ -102,6 +102,7 @@ class Message
     public function setRegistrationIds($registrationIds)
     {
         $this->registrationIds = $registrationIds;
+        return $this;
     }
 
     public function getCollapseKey()
@@ -112,6 +113,7 @@ class Message
     public function setCollapseKey($collapseKey)
     {
         $this->collapseKey = $collapseKey;
+        return $this;
     }
 
     public function getData()
@@ -122,6 +124,7 @@ class Message
     public function setData($data)
     {
         $this->data = $data;
+        return $this;
     }
 
     public function getDelayWhileIdle()
@@ -132,6 +135,7 @@ class Message
     public function setDelayWhileIdle($delayWhileIdle)
     {
         $this->delayWhileIdle = $delayWhileIdle;
+        return $this;
     }
 
     public function getTtl()
@@ -142,6 +146,7 @@ class Message
     public function setTtl($ttl)
     {
         $this->ttl = $ttl;
+        return $this;
     }
 
     public function getRestrictedPackageName()
@@ -152,6 +157,7 @@ class Message
     public function setRestrictedPackageName($restrictedPackageName)
     {
         $this->restrictedPackageName = $restrictedPackageName;
+        return $this;
     }
 
     public function getDryRun()
@@ -162,6 +168,7 @@ class Message
     public function setDryRun($dryRun)
     {
         $this->dryRun = $dryRun;
+        return $this;
     }
 
 }
