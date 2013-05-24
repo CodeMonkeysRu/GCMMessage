@@ -39,9 +39,11 @@ try {
     }
 
     if ($response->getFailureCount() > 0) {
-        //Remove invalid registration ids from DB
-        $invalidRegIds = $response->getInvalidRegistrationIds();
-        //TODO
+        $invalidRegistrationIds = $GCMresponse->getInvalidRegistrationIds();
+        foreach($invalidRegistrationIds as $invalidRegistrationId) {
+            //Remove invalid registration Ids from DB
+            //TODO
+        }
 
         //Schedule to resend messages to unavailable devices
         $unavailableIds = $response->getUnavailableRegistrationIds();
@@ -86,9 +88,11 @@ try {
     }
 
     if ($response->getFailureCount() > 0) {
-        //Remove invalid registration ids from DB
-        $invalidRegIds = $response->getInvalidRegistrationIds();
-        //TODO
+        $invalidRegistrationIds = $GCMresponse->getInvalidRegistrationIds();
+        foreach($invalidRegistrationIds as $invalidRegistrationId) {
+            //Remove invalid registration Ids from DB
+            //TODO
+        }
 
         //Schedule to resend messages to unavailable devices
         $unavailableIds = $response->getUnavailableRegistrationIds();
