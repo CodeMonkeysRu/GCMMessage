@@ -60,6 +60,11 @@ class Sender
             throw new Exception("Server API Key not set", Exception::ILLEGAL_API_KEY);
         }
 
+        //GCM response: Number of messages on bulk (1001) exceeds maximum allowed (1000)
+        if (count($message->getRegistrationIds()) > 1000) {
+            throw new Exception("Malformed request: Registration Ids exceed the GCM imposed limit of 1000", Exception::MALFORMED_REQUEST);
+        }
+        
         $rawData = $this->formMessageData($message);
         if (isset($rawData['data'])) {
             if (strlen(json_encode($rawData['data'])) > 4096) {
