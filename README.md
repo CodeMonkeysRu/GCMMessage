@@ -30,20 +30,22 @@ $message
 try {
     $response = $sender->send($message);
 
-    $newRegistrationIds = $response->getNewRegistrationIds();
-    foreach ($newRegistrationIds as $oldRegistrationId => $newRegistrationId){
-        //Update $oldRegistrationId to $newRegistrationId in DB
-        ...
+    if ($response->getNewRegistrationIdsCount() > 0) {
+        $newRegistrationIds = $response->getNewRegistrationIds();
+        foreach ($newRegistrationIds as $oldRegistrationId => $newRegistrationId){
+            //Update $oldRegistrationId to $newRegistrationId in DB
+            //TODO
+        }
     }
 
     if ($response->getFailureCount() > 0) {
         //Remove invalid registration ids from DB
         $invalidRegIds = $response->getInvalidRegistrationIds();
-        ...
+        //TODO
 
         //Schedule to resend messages to unavailable devices
         $unavailableIds = $response->getUnavailableRegistrationIds();
-        ...
+        //TODO
     }
 } catch (GCM\Exception $e) {
 
@@ -75,20 +77,22 @@ try {
         "collapse_key"
     );
 
-    $newRegistrationIds = $response->getNewRegistrationIds();
-    foreach ($newRegistrationIds as $oldRegistrationId => $newRegistrationId){
-        //Update $oldRegistrationId to $newRegistrationId in DB
-        ...
+    if ($response->getNewRegistrationIdsCount() > 0) {
+        $newRegistrationIds = $response->getNewRegistrationIds();
+        foreach ($newRegistrationIds as $oldRegistrationId => $newRegistrationId){
+            //Update $oldRegistrationId to $newRegistrationId in DB
+            //TODO
+        }
     }
 
     if ($response->getFailureCount() > 0) {
         //Remove invalid registration ids from DB
         $invalidRegIds = $response->getInvalidRegistrationIds();
-        ...
+        //TODO
 
         //Schedule to resend messages to unavailable devices
         $unavailableIds = $response->getUnavailableRegistrationIds();
-        ...
+        //TODO
     }
 } catch (GCM\Exception $e) {
 
