@@ -41,7 +41,7 @@ try {
     if ($response->getFailureCount() > 0) {
         $invalidRegistrationIds = $GCMresponse->getInvalidRegistrationIds();
         foreach($invalidRegistrationIds as $invalidRegistrationId) {
-            //Remove invalid registration Ids from DB
+            //Remove $invalidRegistrationId from DB
             //TODO
         }
 
@@ -90,7 +90,7 @@ try {
     if ($response->getFailureCount() > 0) {
         $invalidRegistrationIds = $GCMresponse->getInvalidRegistrationIds();
         foreach($invalidRegistrationIds as $invalidRegistrationId) {
-            //Remove invalid registration Ids from DB
+            //Remove $invalidRegistrationId from DB
             //TODO
         }
 
