@@ -34,9 +34,11 @@ class Sender
     /**
      * Send message to GCM without explicitly created message
      *
-     * @param mixed same params as in Message bulkSet
+     * @param string[] $registrationIds
+     * @param array|null $data
+     * @param string|null $collapseKey
      *
-     * @throws \UnexpectedValueException
+     * @throws \CodeMonkeysRu\GCM\Exception
      * @return \CodeMonkeysRu\GCM\Response
      */
     public function sendMessage()
@@ -50,7 +52,7 @@ class Sender
      * Send message to GCM
      *
      * @param \CodeMonkeysRu\GCM\Message $message
-     * @throws \UnexpectedValueException
+     * @throws \CodeMonkeysRu\GCM\Exception
      * @return \CodeMonkeysRu\GCM\Response
      */
     public function send(Message $message)
