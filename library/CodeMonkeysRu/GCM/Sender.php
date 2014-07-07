@@ -1,151 +1,115 @@
 <?php
 namespace CodeMonkeysRu\GCM;
+use Curl\Curl;
 
 /**
  * Messages sender to GCM servers
  *
+ * @package CodeMonkeysRu\GCM
  * @author Vladimir Savenkov <ivariable@gmail.com>
+ * @author Steve Tauber <taubers@gmail.com>
  */
 class Sender
 {
 
     /**
-     * GCM endpoint
-     *
-     * @var string
+     * Max retry time for exponential back off.
      */
-    private $gcmUrl = 'https://android.googleapis.com/gcm/send';
-
-    /**
-     * An API key that gives the application server authorized access to Google services.
-     *
-     * @var string
-     */
-    private $serverApiKey = false;
-
-    public function __construct($serverApiKey, $gcmUrl = false)
-    {
-        $this->serverApiKey = $serverApiKey;
-        if ($gcmUrl) {
-            $this->gcmUrl = $gcmUrl;
-        }
-    }
-
-    /**
-     * Send message to GCM without explicitly created message
-     *
-     * @param string[] $registrationIds
-     * @param array|null $data
-     * @param string|null $collapseKey
-     *
-     * @throws \CodeMonkeysRu\GCM\Exception
-     * @return \CodeMonkeysRu\GCM\Response
-     */
-    public function sendMessage()
-    {
-        $message = new \CodeMonkeysRu\GCM\Message();
-        call_user_func_array(array($message, 'bulkSet'), func_get_args());
-        return $this->send($message);
-    }
+    const MAX_RETRY_TIME = 32;
 
     /**
      * Send message to GCM
      *
-     * @param \CodeMonkeysRu\GCM\Message $message
-     * @throws \CodeMonkeysRu\GCM\Exception
-     * @return \CodeMonkeysRu\GCM\Response
+     * @param Message $message The Message to send.
+     * @param string  $serverApiKey Server API Key.
+     * @param string  $gcmUrl GCM URL.
+     * @param integer $nextDelay Next exponential back off delay.
+     *
+     * @return Response
+     * @throws Exception When
      */
-    public function send(Message $message)
-    {
+    public static function send(Message $message, $serverApiKey, $gcmUrl, $nextDelay = 1) {
+        $curl = self::initCurl();
+        self::configCurl($curl, $serverApiKey);
+        self::postCurl($curl, $gcmUrl, $message->toJson());
+        self::closeCurl($curl);
 
-        if (!$this->serverApiKey) {
-            throw new Exception("Server API Key not set", Exception::ILLEGAL_API_KEY);
-        }
-
-        //GCM response: Number of messages on bulk (1001) exceeds maximum allowed (1000)
-        if (count($message->getRegistrationIds()) > 1000) {
-            throw new Exception("Malformed request: Registration Ids exceed the GCM imposed limit of 1000", Exception::MALFORMED_REQUEST);
-        }
-        
-        $rawData = $this->formMessageData($message);
-        if (isset($rawData['data'])) {
-            if (strlen(json_encode($rawData['data'])) > 4096) {
-                throw new Exception("Data payload is to big (max 4096 bytes)", Exception::MALFORMED_REQUEST);
+        if ($curl->error) {
+            switch($curl->http_status_code) {
+                case 400:
+                    throw new Exception('GCM\Sender->send - Malformed Request: ' . $curl->raw_response, Exception::MALFORMED_REQUEST);
+                    break;
+                case 401:
+                    throw new Exception('GCM\Sender->send - Authentication Error', Exception::AUTHENTICATION_ERROR);
+                    break;
+                default:
+                    $retry = $curl->response_headers['retry-after'];
+                    if($retry) {
+                        if((int) $retry) {
+                            //in seconds: 120
+                            $retry = \DateTime::createFromFormat('U', strtotime('now +' . (int) $retry . ' seconds'));
+                        } else {
+                            //absolute: Fri, 31 Dec 1999 23:59:59 GMT
+                            $retry = \DateTime::createFromFormat('U', strtotime($retry));
+                        }
+                        return $retry;
+                    } else {
+                        //Timeout
+                        if($curl->http_status_code >= 501 && $curl->http_status_code <= 599) {
+                            if($nextDelay < self::MAX_RETRY_TIME) {
+                                return $nextDelay;
+                            }
+                        }
+                        throw new Exception('GCM\Sender->send - Unknown Error: ' . $curl->raw_response, Exception::UNKNOWN_ERROR);
+                    }
+                    break;
             }
         }
-        $data = json_encode($rawData);
 
-        $headers = array(
-            'Authorization: key='.$this->serverApiKey,
-            'Content-Type: application/json'
-        );
-
-        $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, $this->gcmUrl);
-
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-
-        $resultBody = curl_exec($ch);
-        $resultHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        curl_close($ch);
-
-        switch ($resultHttpCode) {
-            case "200":
-                //All fine. Continue response processing.
-                break;
-
-            case "400":
-                throw new Exception('Malformed request. '.$resultBody, Exception::MALFORMED_REQUEST);
-                break;
-
-            case "401":
-                throw new Exception('Authentication Error. '.$resultBody, Exception::AUTHENTICATION_ERROR);
-                break;
-
-            default:
-                //TODO: Retry-after
-                throw new Exception("Unknown error. ".$resultBody, Exception::UNKNOWN_ERROR);
-                break;
-        }
-
-        return new Response($message, $resultBody);
+        return new Response($message, $curl->response);
     }
 
     /**
-     * Form raw message data for sending to GCM
+     * Init Curl.
      *
-     * @param \CodeMonkeysRu\GCM\Message $message
-     * @return array
+     * @return Curl
      */
-    private function formMessageData(Message $message)
-    {
-        $data = array(
-            'registration_ids' => $message->getRegistrationIds(),
-        );
+    protected static function initCurl() {
+        return new Curl();
+    }
 
-        $dataFields = array(
-            'registration_ids' => 'getRegistrationIds',
-            'collapse_key' => 'getCollapseKey',
-            'data' => 'getData',
-            'delay_while_idle' => 'getDelayWhileIdle',
-            'time_to_live' => 'getTtl',
-            'restricted_package_name' => 'getRestrictedPackageName',
-            'dry_run' => 'getDryRun',
-        );
+    /**
+     * Configure Curl.
+     *
+     * @param Curl $curl
+     * @param string $serverApiKey
+     */
+    protected static function configCurl(&$curl, $serverApiKey) {
+        $curl->setUserAgent('CodeMonkeysRu\GCMMessage');
+        $curl->setOpt(CURLOPT_SSL_VERIFYPEER, 1);
+        $curl->setOpt(CURLOPT_SSL_VERIFYHOST, 2);
+        $curl->setHeader('Authorization', 'key=' . $serverApiKey);
+        $curl->setHeader('Content-Type', 'application/json');
+    }
 
-        foreach ($dataFields as $fieldName => $getter) {
-            if ($message->$getter() != null) {
-                $data[$fieldName] = $message->$getter();
-            }
-        }
+    /**
+     * Post message.
+     *
+     * @param Curl $curl
+     * @param string $gcmUrl
+     * @param string $json
+     */
+    protected static function postCurl(&$curl, $gcmUrl, $json) {
+        $curl->post($gcmUrl, $json);
+    }
 
-        return $data;
+    /**
+     * Close.
+     *
+     * @param Curl $curl
+     */
+    protected static function closeCurl(&$curl) {
+        $curl->close();
     }
 
 }
