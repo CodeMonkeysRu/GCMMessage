@@ -95,7 +95,7 @@ abstract class DefaultSendJob {
             }
             $this->response = $response;
         } elseif(is_numeric($response)) {
-            $this->args['delay'] = \DateTime::createFromFormat('U', strtotime('now +' . (int) $response . ' seconds'));
+            $this->args['delay'] = \DateTime::createFromFormat('U', strtotime('now +' . (int) $response . ' seconds'))->format('U');
             $this->args['nextDelay'] = $response * 2;
             Client::enqueueFromJobArgs($this->args);
         }

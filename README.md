@@ -54,23 +54,24 @@ class MyQueueJob extends \CodeMonkeysRu\GCM\DefaultSendJob {
 
     /* See DefaultSendJob for all the possible statuses */
     public function tearDown() {
-        $failed = $this->response->getFailedIds();
-        if(!empty($failed['InvalidRegistration'])) {
-            foreach($failed['InvalidRegistration'] as $f) {
-                //remove from DB records
+        if($this->response) {
+            $failed = $this->response->getFailedIds();
+            if(!empty($failed['InvalidRegistration'])) {
+                foreach($failed['InvalidRegistration'] as $f) {
+                    //remove from DB records
+                }
             }
-        }
-        if(!empty($failed['NotRegistered'])) {
-            foreach($failed['NotRegistered'] as $f) {
-                //remove from DB records
+            if(!empty($failed['NotRegistered'])) {
+                foreach($failed['NotRegistered'] as $f) {
+                    //remove from DB records
+                }
             }
-        }
 
-        /* Canonical IDs sent? */
-        $newIds = $this->response->getNewRegistrationIds();
-        if(!empty($newIds)) {
-            foreach($newIds as $n) {
-                //Update DB records
+            $newIds = $this->response->getNewRegistrationIds();
+            if(!empty($newIds)) {
+                foreach($newIds as $n) {
+                    //Update DB records
+                }
             }
         }
     }
@@ -87,7 +88,7 @@ require_once "MyQueueJob.php"
 
 Command line:
 ```bash
-$ QUEUE=gcmDefault APP_INCLUDE=job_app_include.php php vendor/chrisboulton/php-resque/resque.php
+$ QUEUE=gcmDefault LOGGING=2 APP_INCLUDE=job_app_include.php php vendor/chrisboulton/php-resque/resque.php
 ```
 
 

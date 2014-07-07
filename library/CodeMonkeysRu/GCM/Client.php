@@ -66,8 +66,8 @@ class Client {
      */
     public static function enqueueFromJobArgs($args) {
         \Resque::enqueue(
-            self::$queueName,
-            self::$sendJob,
+            $args['queueName'],
+            $args['sendJob'],
             $args
         );
     }
@@ -82,7 +82,9 @@ class Client {
         $args = array(
             'serverApiKey' => self::$serverApiKey,
             'gcmUrl' => self::$gcmUrl,
-            'message' => $message->toArray()
+            'message' => $message->toArray(),
+            'queueName' => self::$queueName,
+            'sendJob' => self::$sendJob
         );
 
         if($delay) {
@@ -99,48 +101,42 @@ class Client {
     /**
      * @param string $gcmUrl
      */
-    public static function setGcmUrl($gcmUrl)
-    {
+    public static function setGcmUrl($gcmUrl) {
         self::$gcmUrl = $gcmUrl;
     }
 
     /**
      * @return string
      */
-    public function getGcmUrl()
-    {
+    public function getGcmUrl() {
         return self::$gcmUrl;
     }
 
     /**
      * @param string $queueName
      */
-    public function setQueueName($queueName)
-    {
+    public function setQueueName($queueName) {
         self::$queueName = $queueName;
     }
 
     /**
      * @return string
      */
-    public function getQueueName()
-    {
+    public function getQueueName() {
         return self::$queueName;
     }
 
     /**
      * @param string $serverApiKey
      */
-    public function setServerApiKey($serverApiKey)
-    {
+    public function setServerApiKey($serverApiKey) {
         self::$serverApiKey = $serverApiKey;
     }
 
     /**
      * @return string
      */
-    public function getServerApiKey()
-    {
+    public function getServerApiKey() {
         return self::$serverApiKey;
     }
 }

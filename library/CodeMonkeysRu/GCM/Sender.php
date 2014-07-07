@@ -9,8 +9,7 @@ use Curl\Curl;
  * @author Vladimir Savenkov <ivariable@gmail.com>
  * @author Steve Tauber <taubers@gmail.com>
  */
-class Sender
-{
+class Sender {
 
     /**
      * Max retry time for exponential back off.
