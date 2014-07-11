@@ -14,7 +14,9 @@
     "license": "MIT",
     "version": "0.1",
     "require": {
-        "php": ">=5.3.2"
+        "php": ">=5.3.2",
+        "chrisboulton/php-resque": "1.2.x",
+        "php-curl-class/php-curl-class": "2.1.*"
     },
 	"minimum-stability": "dev",
 	"autoload": {

@@ -2,38 +2,41 @@
 namespace CodeMonkeysRu\GCM;
 
 /**
+ * Class Response
+ *
+ * @package CodeMonkeysRu\GCM
  * @author Vladimir Savenkov <ivariable@gmail.com>
+ * @author Steve Tauber <taubers@gmail.com>
  */
-class Response
-{
+class Response {
 
     /**
      * Unique ID (number) identifying the multicast message.
      *
      * @var integer
      */
-    private $multicastId = null;
+    protected $multicastId = null;
 
     /**
      * Number of messages that were processed without an error.
      *
      * @var integer
      */
-    private $success = null;
+    protected $success = null;
 
     /**
      * Number of messages that could not be processed.
      *
      * @var integer
      */
-    private $failure = null;
+    protected $failure = null;
 
     /**
      * Number of results that contain a canonical registration ID.
      *
      * @var integer
      */
-    private $canonicalIds = null;
+    protected $canonicalIds = null;
 
     /**
      * Array of objects representing the status of the messages processed.
@@ -51,122 +54,76 @@ class Response
      *
      * @var array
      */
-    private $results = array();
+    protected $results = array();
 
-    public function __construct(Message $message, $responseBody)
-    {
-        $data = \json_decode($responseBody, true);
-        if ($data === null) {
-            throw new Exception("Malformed reponse body. ".$responseBody, Exception::MALFORMED_RESPONSE);
-        }
-        $this->multicastId = $data['multicast_id'];
-        $this->failure = $data['failure'];
-        $this->success = $data['success'];
-        $this->canonicalIds = $data['canonical_ids'];
+    /**
+     * Array of IDs grouped by failure.
+     *
+     * @var array
+     */
+    protected $failedIds = array();
+
+    /**
+     * Array of expired IDs and their new counterpart.
+     *
+     * @var array
+     */
+    protected $newRegistrationIds = array();
+
+    /**
+     * Constructor
+     *
+     * @param Message   $message Original message
+     * @param \stdClass $responseBody Response from Curl.
+     */
+    public function __construct(Message $message, \stdClass $responseBody) {
+        $this->multicastId = $responseBody->multicast_id;
+        $this->success = $responseBody->success;
+        $this->failure = $responseBody->failure;
+        $this->canonicalIds = $responseBody->canonical_ids;
         $this->results = array();
-        foreach ($message->getRegistrationIds() as $key => $registrationId) {
-            $this->results[$registrationId] = $data['results'][$key];
+        $sentIds = $message->getRegistrationIds();
+        foreach ($responseBody->results as $k => $v) {
+            $id = $sentIds[$k];
+            //Convert from stdClass to assoc array
+            $array = get_object_vars($v);
+            $this->results[$id] = $array;
+            //New Registration IDs
+            if(isset($array['registration_id'])) {
+                $this->newRegistrationIds[$id] = $array['registration_id'];
+            }
+            //Failures
+            if(isset($array['error'])) {
+                $this->failedIds[$array['error']][$id] = $array;
+            }
         }
     }
 
-    public function getMulticastId()
-    {
+    public function getMulticastId() {
         return $this->multicastId;
     }
 
-    public function getSuccessCount()
-    {
+    public function getSuccessCount() {
         return $this->success;
     }
 
-    public function getFailureCount()
-    {
+    public function getFailureCount() {
         return $this->failure;
     }
 
-    public function getNewRegistrationIdsCount()
-    {
+    public function getCanonicalIds() {
         return $this->canonicalIds;
     }
 
-    public function getResults()
-    {
+    public function getResults() {
         return $this->results;
     }
 
-    /**
-     * Return an array of expired registration ids linked to new id
-     * All old registration ids must be updated to new ones in DB
-     *
-     * @return array oldRegistrationId => newRegistrationId
-     */
-    public function getNewRegistrationIds()
-    {
-        if ($this->getNewRegistrationIdsCount() == 0) {
-            return array();
-        }
-        $filteredResults = array_filter($this->results,
-            function($result) {
-                return isset($result['registration_id']);
-            });
-
-        $data = array_map(function($result) {
-                return $result['registration_id'];
-            }, $filteredResults);
-
-        return $data;
+    public function getNewRegistrationIds() {
+        return $this->newRegistrationIds;
     }
 
-    /**
-     * Returns an array containing invalid registration ids
-     * They must be removed from DB because the application was uninstalled from the device.
-     *
-     * @return array
-     */
-    public function getInvalidRegistrationIds()
-    {
-        if ($this->getFailureCount() == 0) {
-            return array();
-        }
-        $filteredResults = array_filter($this->results,
-            function($result) {
-                return (
-                    isset($result['error'])
-                    &&
-                    (
-                    ($result['error'] == "NotRegistered")
-                    ||
-                    ($result['error'] == "InvalidRegistration")
-                    )
-                    );
-            });
-
-        return array_keys($filteredResults);
+    public function getFailedIds() {
+       return $this->failedIds;
     }
-
-    /**
-     * Returns an array of registration ids for which you must resend a message (?),
-     * cause devices aren't available now.
-     *
-     * @TODO: check if it be auto sended later
-     *
-     * @return array
-     */
-    public function getUnavailableRegistrationIds()
-    {
-        if ($this->getFailureCount() == 0) {
-            return array();
-        }
-        $filteredResults = array_filter($this->results,
-            function($result) {
-                return (
-                    isset($result['error'])
-                    &&
-                    ($result['error'] == "Unavailable")
-                    );
-            });
-
-        return array_keys($filteredResults);
-    }
-
 }
