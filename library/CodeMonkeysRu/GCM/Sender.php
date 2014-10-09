@@ -17,17 +17,27 @@ class Sender
     private $gcmUrl = 'https://android.googleapis.com/gcm/send';
 
     /**
+     * Path to CA file (due to cURL 7.10 changes; you can get it from here: http://curl.haxx.se/docs/caextract.html)
+     * 
+     * @var string
+     */
+    private $caInfoPath = false;
+
+    /**
      * An API key that gives the application server authorized access to Google services.
      *
      * @var string
      */
     private $serverApiKey = false;
 
-    public function __construct($serverApiKey, $gcmUrl = false)
+    public function __construct($serverApiKey, $gcmUrl = false, $caInfoPath = false)
     {
         $this->serverApiKey = $serverApiKey;
         if ($gcmUrl) {
             $this->gcmUrl = $gcmUrl;
+        }
+        if ($caInfoPath) {
+            $this->caInfoPath = $caInfoPath;
         }
     }
 
@@ -87,6 +97,11 @@ class Sender
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        if ($this->caInfoPath !== false) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_CAINFO, $this->caInfoPath);
+        }
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
