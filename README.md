@@ -113,9 +113,11 @@ try {
 
 ```
 
-Note about cURL >= 7.10
+Note about cURL SSL verify peer option
 -----------------------
-Since 7.10 version cURL has CURLOPT_SSL_VERIFYPEER option enabled by default. To handle this you need to [download](http://curl.haxx.se/docs/caextract.html) root certificates and add them somewhere into your project directory. Then construct Sender object like this:
+Library has turned off CURLOPT_SSL_VERIFYPEER by default, but you can enable it by passing third parameter into constructor of Sender class.
+
+You need to [download](http://curl.haxx.se/docs/caextract.html) root certificates and add them somewhere into your project directory. Then construct Sender object like this:
 
 ```php
 
