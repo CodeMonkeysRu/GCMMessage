@@ -113,6 +113,18 @@ try {
 
 ```
 
+Note about cURL >= 7.10
+-----------------------
+Since 7.10 version cURL has CURLOPT_SSL_VERIFYPEER option enabled by default. To handle this you need to [download](http://curl.haxx.se/docs/caextract.html) root certificates and add them somewhere into your project directory. Then construct Sender object like this:
+
+```php
+
+use \CodeMonkeysRu\GCM;
+
+$sender = new GCM\Sender("YOUR GOOGLE API KEY", false, "/path/to/cacert.crt");
+
+```
+
 
 ChangeLog
 ----------------------
