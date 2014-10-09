@@ -113,6 +113,20 @@ try {
 
 ```
 
+Note about cURL SSL verify peer option
+-----------------------
+Library has turned off CURLOPT_SSL_VERIFYPEER by default, but you can enable it by passing third parameter into constructor of Sender class.
+
+You need to [download](http://curl.haxx.se/docs/caextract.html) root certificates and add them somewhere into your project directory. Then construct Sender object like this:
+
+```php
+
+use \CodeMonkeysRu\GCM;
+
+$sender = new GCM\Sender("YOUR GOOGLE API KEY", false, "/path/to/cacert.crt");
+
+```
+
 
 ChangeLog
 ----------------------
