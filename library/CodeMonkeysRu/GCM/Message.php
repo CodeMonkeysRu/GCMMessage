@@ -44,6 +44,18 @@ class Message
     private $data = null;
 
     /**
+     * Notification payload.
+     * This parameter specifies the key-value pairs of the notification payload.
+     * See Notification payload support for more information
+     * (https://developers.google.com/cloud-messaging/server-ref#notification-payload-support).
+     *
+     * Optional.
+     *
+     * @var array|null
+     */
+    private $notification = null;
+
+    /**
      * Indicates that the message should not be sent immediately if the device is idle.
      * The server will wait for the device to become active, and then only the last message
      * for each collapse_key value will be sent.
@@ -131,6 +143,17 @@ class Message
     public function setData($data)
     {
         $this->data = $data;
+        return $this;
+    }
+
+    public function getNotification()
+    {
+        return $this->notification;
+    }
+
+    public function setNotification($notification)
+    {
+        $this->notification = $notification;
         return $this;
     }
 

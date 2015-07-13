@@ -76,13 +76,10 @@ class Sender
         if (count($message->getRegistrationIds()) > 1000) {
             throw new Exception("Malformed request: Registration Ids exceed the GCM imposed limit of 1000", Exception::MALFORMED_REQUEST);
         }
-        
+
         $rawData = $this->formMessageData($message);
-        if (isset($rawData['data'])) {
-            if (strlen(json_encode($rawData['data'])) > 4096) {
-                throw new Exception("Data payload is to big (max 4096 bytes)", Exception::MALFORMED_REQUEST);
-            }
-        }
+        static::validatePayloadSize($rawData, 'data', 4096);
+        static::validatePayloadSize($rawData, 'notification', 2048);
         $data = json_encode($rawData);
 
         $headers = array(
@@ -150,6 +147,7 @@ class Sender
             'registration_ids' => 'getRegistrationIds',
             'collapse_key' => 'getCollapseKey',
             'data' => 'getData',
+            'notification' => 'getNotification',
             'delay_while_idle' => 'getDelayWhileIdle',
             'time_to_live' => 'getTtl',
             'restricted_package_name' => 'getRestrictedPackageName',
@@ -163,6 +161,26 @@ class Sender
         }
 
         return $data;
+    }
+
+    /**
+     * Validate size of json representation of passed payload
+     *
+     * @param array $rawData
+     * @param string $fieldName
+     * @param int $maxSize
+     * @throws \CodeMonkeysRu\GCM\Exception
+     * @return void
+     */
+    private static function validatePayloadSize(array $rawData, $fieldName, $maxSize)
+    {
+        if (!isset($rawData[$fieldName])) return;
+        if (strlen(json_encode($rawData[$fieldName])) > $maxSize) {
+            throw new Exception(
+                ucfirst($fieldName)." payload is to big (max {$maxSize} bytes)",
+                Exception::MALFORMED_REQUEST
+            );
+        }
     }
 
 }
