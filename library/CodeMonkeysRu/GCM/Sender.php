@@ -78,8 +78,8 @@ class Sender
         }
 
         $rawData = $this->formMessageData($message);
-        static::validatePayloadSize($rawData, 'data', 4096);
-        static::validatePayloadSize($rawData, 'notification', 2048);
+        $this->validatePayloadSize($rawData, 'data', 4096);
+        $this->validatePayloadSize($rawData, 'notification', 2048);
         $data = json_encode($rawData);
 
         $headers = array(
@@ -172,7 +172,7 @@ class Sender
      * @throws \CodeMonkeysRu\GCM\Exception
      * @return void
      */
-    private static function validatePayloadSize(array $rawData, $fieldName, $maxSize)
+    private function validatePayloadSize(array $rawData, $fieldName, $maxSize)
     {
         if (!isset($rawData[$fieldName])) return;
         if (strlen(json_encode($rawData[$fieldName])) > $maxSize) {
