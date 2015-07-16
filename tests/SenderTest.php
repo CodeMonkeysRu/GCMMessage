@@ -18,7 +18,7 @@ class SenderTest extends PHPUnit_Framework_TestCase
      * @expectedException \CodeMonkeysRu\GCM\Exception
      * @expectedExceptionCode 3
      */
-    public function testPayloadSizeCheck()
+    public function testPayloadDataSizeCheck()
     {
         $sender = new \CodeMonkeysRu\GCM\Sender("MY API KEY ))");
         $data = array();
@@ -26,6 +26,19 @@ class SenderTest extends PHPUnit_Framework_TestCase
             $data['key'.$i] = $i;
         }
         $message = new \CodeMonkeysRu\GCM\Message(array(), $data);
+        $sender->send($message);
+    }
+
+    /**
+     * @expectedException \CodeMonkeysRu\GCM\Exception
+     * @expectedExceptionCode 3
+     */
+    public function testPayloadNotificationSizeCheck()
+    {
+        $sender = new \CodeMonkeysRu\GCM\Sender("MY API KEY ))");
+        $notification = array('key' => str_repeat('x', 2048));
+        $message = (new \CodeMonkeysRu\GCM\Message())
+            ->setNotification($notification);
         $sender->send($message);
     }
 
