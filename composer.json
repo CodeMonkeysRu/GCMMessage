@@ -1,25 +1,25 @@
 {
 	"name": "codemonkeys-ru/gcm-message",
-    "type": "library",
-    "description": "Google Cloud Messaging (GCM) PHP Server Library",
-    "keywords": ["GCM", "push message", "android"],
-	"authors": [
+	"type": "library",
+    	"description": "Google Cloud Messaging (GCM) PHP Server Library",
+    	"keywords": ["GCM", "push message", "android"],
+    	"authors": [
 		{
 			"name": "Vladimir Savenkov",
 			"email": "ivariable@gmail.com",
 			"homepage": "http://ivariable.ru",
 			"role": "Developer"
 		}
-	],
-    "license": "MIT",
-    "version": "0.1",
-    "require": {
-        "php": ">=5.3.2"
-    },
+    	],
+    	"license": "MIT",
+    	"version": "0.2",
+    	"require": {
+        	"php": ">=5.3.2"
+    	},
 	"minimum-stability": "dev",
 	"autoload": {
-        "psr-0": {
+        	"psr-0": {
 			"CodeMonkeysRu\\GCM": "library/"
 		}
-    }
+    	}
 }
