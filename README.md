@@ -9,24 +9,21 @@ http://developer.android.com/guide/google/gcm/index.html
 Example usage
 -----------------------
 ```php
-
 use \CodeMonkeysRu\GCM;
 
 $sender = new GCM\Sender("YOUR GOOGLE API KEY");
 
-$message = new GCM\Message(
-        array("device_registration_id1", "device_registration_id2"),
-        array("data1" => "123", "data2" => "string")
-);
 
-$message
-    ->notification(array("title" => "foo", "body" => "bar"))
+$message = $sender->buildMessage()
+    ->setRegistrationIds(array("device_registration_id1", "device_registration_id2"))
+    ->setData(array("data1" => "123", "data2" => "string"))
     ->setCollapseKey("collapse_key")
     ->setDelayWhileIdle(true)
-    ->setTtl(123)
+    ->setTimeToLive(123)
+    ->setNotificationMessage('foo', 'bar')
     ->setRestrictedPackageName("com.example.trololo")
     ->setDryRun(true)
-;
+    ->build();
 
 try {
     $response = $sender->send($message);
@@ -40,7 +37,7 @@ try {
     }
 
     if ($response->getFailureCount() > 0) {
-        $invalidRegistrationIds = $GCMresponse->getInvalidRegistrationIds();
+        $invalidRegistrationIds = $response->getInvalidRegistrationIds();
         foreach($invalidRegistrationIds as $invalidRegistrationId) {
             //Remove $invalidRegistrationId from DB
             //TODO
@@ -62,7 +59,6 @@ try {
             break;
     }
 }
-
 ```
 
 Also indirect message API available
@@ -89,7 +85,7 @@ try {
     }
 
     if ($response->getFailureCount() > 0) {
-        $invalidRegistrationIds = $GCMresponse->getInvalidRegistrationIds();
+        $invalidRegistrationIds = $response->getInvalidRegistrationIds();
         foreach($invalidRegistrationIds as $invalidRegistrationId) {
             //Remove $invalidRegistrationId from DB
             //TODO
