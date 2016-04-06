@@ -18,7 +18,7 @@ class Sender
 
     /**
      * Path to CA file (due to cURL 7.10 changes; you can get it from here: http://curl.haxx.se/docs/caextract.html)
-     * 
+     *
      * @var string
      */
     private $caInfoPath = false;
@@ -30,8 +30,14 @@ class Sender
      */
     private $serverApiKey = false;
 
+    /**
+     * @param string     $serverApiKey
+     * @param string     $gcmUrl
+     * @param bool|false $caInfoPath
+     */
     public function __construct($serverApiKey, $gcmUrl = false, $caInfoPath = false)
     {
+
         $this->serverApiKey = $serverApiKey;
         if ($gcmUrl) {
             $this->gcmUrl = $gcmUrl;
@@ -44,8 +50,8 @@ class Sender
     /**
      * Send message to GCM without explicitly created message
      *
-     * @param string[] $registrationIds
-     * @param array|null $data
+     * @param string[]    $registrationIds
+     * @param array|null  $data
      * @param string|null $collapseKey
      *
      * @throws \CodeMonkeysRu\GCM\Exception
@@ -53,8 +59,9 @@ class Sender
      */
     public function sendMessage()
     {
+
         $message = new \CodeMonkeysRu\GCM\Message();
-        call_user_func_array(array($message, 'bulkSet'), func_get_args());
+        call_user_func_array([$message, 'bulkSet'], func_get_args());
         return $this->send($message);
     }
 
@@ -62,6 +69,7 @@ class Sender
      * Send message to GCM
      *
      * @param \CodeMonkeysRu\GCM\Message $message
+     *
      * @throws \CodeMonkeysRu\GCM\Exception
      * @return \CodeMonkeysRu\GCM\Response
      */
@@ -74,7 +82,8 @@ class Sender
 
         //GCM response: Number of messages on bulk (1001) exceeds maximum allowed (1000)
         if (count($message->getRecipients()) > 1000) {
-            throw new Exception("Malformed request: Registration Ids exceed the GCM imposed limit of 1000", Exception::MALFORMED_REQUEST);
+            throw new Exception("Malformed request: Registration Ids exceed the GCM imposed limit of 1000",
+                Exception::MALFORMED_REQUEST);
         }
 
         $rawData = $this->formMessageData($message);
@@ -82,10 +91,10 @@ class Sender
         $this->validatePayloadSize($rawData, 'notification', 2048);
         $data = json_encode($rawData);
 
-        $headers = array(
-            'Authorization: key='.$this->serverApiKey,
+        $headers = [
+            'Authorization: key=' . $this->serverApiKey,
             'Content-Type: application/json'
-        );
+        ];
 
         $ch = curl_init();
 
@@ -104,7 +113,7 @@ class Sender
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
-        $resultBody = curl_exec($ch);
+        $resultBody     = curl_exec($ch);
         $resultHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         curl_close($ch);
@@ -115,16 +124,16 @@ class Sender
                 break;
 
             case "400":
-                throw new Exception('Malformed request. '.$resultBody, Exception::MALFORMED_REQUEST);
+                throw new Exception('Malformed request. ' . $resultBody, Exception::MALFORMED_REQUEST);
                 break;
 
             case "401":
-                throw new Exception('Authentication Error. '.$resultBody, Exception::AUTHENTICATION_ERROR);
+                throw new Exception('Authentication Error. ' . $resultBody, Exception::AUTHENTICATION_ERROR);
                 break;
 
             default:
                 //TODO: Retry-after
-                throw new Exception("Unknown error. ".$resultBody, Exception::UNKNOWN_ERROR);
+                throw new Exception("Unknown error. " . $resultBody, Exception::UNKNOWN_ERROR);
                 break;
         }
 
@@ -135,24 +144,29 @@ class Sender
      * Form raw message data for sending to GCM
      *
      * @param \CodeMonkeysRu\GCM\Message $message
+     *
      * @return array
      */
     private function formMessageData(Message $message)
     {
-        $data = array(
-            'registration_ids' => $message->getRecipients(),
-        );
 
-        $dataFields = array(
-            'registration_ids' => 'getRecipients',
-            'collapse_key' => 'getCollapseKey',
-            'data' => 'getData',
-            'notification' => 'getNotification',
-            'delay_while_idle' => 'getDelayWhileIdle',
-            'time_to_live' => 'getTtl',
+        $data = [];
+
+        if (!is_array($message->getRecipients())) {
+            $data['to'] = $message->getRecipients();
+        } else {
+            $data['registration_ids'] = $message->getRecipients();
+        }
+
+        $dataFields = [
+            'collapse_key'            => 'getCollapseKey',
+            'data'                    => 'getData',
+            'notification'            => 'getNotification',
+            'delay_while_idle'        => 'getDelayWhileIdle',
+            'time_to_live'            => 'getTtl',
             'restricted_package_name' => 'getRestrictedPackageName',
-            'dry_run' => 'getDryRun',
-        );
+            'dry_run'                 => 'getDryRun',
+        ];
 
         foreach ($dataFields as $fieldName => $getter) {
             if ($message->$getter() != null) {
@@ -166,18 +180,22 @@ class Sender
     /**
      * Validate size of json representation of passed payload
      *
-     * @param array $rawData
+     * @param array  $rawData
      * @param string $fieldName
-     * @param int $maxSize
+     * @param int    $maxSize
+     *
      * @throws \CodeMonkeysRu\GCM\Exception
      * @return void
      */
     private function validatePayloadSize(array $rawData, $fieldName, $maxSize)
     {
-        if (!isset($rawData[$fieldName])) return;
+
+        if (!isset($rawData[$fieldName])) {
+            return;
+        }
         if (strlen(json_encode($rawData[$fieldName])) > $maxSize) {
             throw new Exception(
-                ucfirst($fieldName)." payload is to big (max {$maxSize} bytes)",
+                ucfirst($fieldName) . " payload is to big (max {$maxSize} bytes)",
                 Exception::MALFORMED_REQUEST
             );
         }
