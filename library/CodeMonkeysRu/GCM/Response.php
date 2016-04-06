@@ -64,7 +64,7 @@ class Response
         $this->success = $data['success'];
         $this->canonicalIds = $data['canonical_ids'];
         $this->results = array();
-        foreach ($message->getRegistrationIds() as $key => $registrationId) {
+        foreach ($message->getRecipients() as $key => $registrationId) {
             $this->results[$registrationId] = $data['results'][$key];
         }
     }

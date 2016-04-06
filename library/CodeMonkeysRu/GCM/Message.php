@@ -10,14 +10,19 @@ class Message
 {
 
     /**
-     * A string array with the list of devices (registration IDs) receiving the message.
-     * It must contain at least 1 and at most 1000 registration IDs.
+     * Specifies the recipient of a message
+     *
+     * How to use:
+     * String - message topic if sent for all devices
+     * String - registration token/device id if message is sent to one device
+     * Array - list of registration tokens/device ids if message is sent to multiple devices
+     *          It must contain at least 1 and at most 1000 registration IDs.
      *
      * Required.
      *
-     * @var array
+     * @var string|array
      */
-    private $registrationIds = array();
+    private $recipients = '';
 
     /**
      * An arbitrary string (such as "Updates Available") that is used to collapse a group of like messages
@@ -94,111 +99,197 @@ class Message
      */
     private $dryRun = false;
 
-    public function __construct($registrationIds = null, $data = null, $collapseKey = null)
+    /**
+     * @param string|array $recipients
+     * @param array        $data
+     * @param null         $collapseKey
+     */
+    public function __construct($recipients = null, $data = null, $collapseKey = null)
     {
-        $this->bulkSet($registrationIds, $data, $collapseKey);
+
+        $this->bulkSet($recipients, $data, $collapseKey);
     }
 
     /**
      * Set multiple fields at once.
      *
-     * @param string[] $registrationIds
-     * @param array|null $data
-     * @param string|null $collapseKey
+     * @param string|array $recipients
+     * @param array|null   $data
+     * @param string|null  $collapseKey
      */
-    public function bulkSet($registrationIds = array(), $data = null, $collapseKey = null)
+    public function bulkSet($recipients = '', $data = null, $collapseKey = null)
     {
-        $this->setRegistrationIds($registrationIds);
+
+        $this->setRecipients($recipients);
         $this->setData($data);
         $this->setCollapseKey($collapseKey);
     }
 
-    public function getRegistrationIds()
+    /**
+     * @return array|string
+     */
+    public function getRecipients()
     {
-        return $this->registrationIds;
+
+        return $this->recipients;
     }
 
-    public function setRegistrationIds($registrationIds)
+    /**
+     * @param string|array $recipients
+     *
+     * @return $this
+     */
+    public function setRecipients($recipients)
     {
-        $this->registrationIds = $registrationIds;
+
+        $this->recipients = $recipients;
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getCollapseKey()
     {
+
         return $this->collapseKey;
     }
 
+    /**
+     * @param string $collapseKey
+     *
+     * @return $this
+     */
     public function setCollapseKey($collapseKey)
     {
+
         $this->collapseKey = $collapseKey;
         return $this;
     }
 
+    /**
+     * @return array|null
+     */
     public function getData()
     {
+
         return $this->data;
     }
 
+    /**
+     * @param array $data
+     *
+     * @return $this
+     */
     public function setData($data)
     {
+
         $this->data = $data;
         return $this;
     }
 
+    /**
+     * @return array|null
+     */
     public function getNotification()
     {
+
         return $this->notification;
     }
 
+    /**
+     * @param array $notification
+     *
+     * @return $this
+     */
     public function setNotification($notification)
     {
+
         $this->notification = $notification;
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function getDelayWhileIdle()
     {
+
         return $this->delayWhileIdle;
     }
 
+    /**
+     * @param bool $delayWhileIdle
+     *
+     * @return $this
+     */
     public function setDelayWhileIdle($delayWhileIdle)
     {
+
         $this->delayWhileIdle = $delayWhileIdle;
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getTtl()
     {
+
         return $this->ttl;
     }
 
+    /**
+     * @param int $ttl
+     *
+     * @return $this
+     */
     public function setTtl($ttl)
     {
+
         $this->ttl = $ttl;
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getRestrictedPackageName()
     {
+
         return $this->restrictedPackageName;
     }
 
+    /**
+     * @param string $restrictedPackageName
+     *
+     * @return $this
+     */
     public function setRestrictedPackageName($restrictedPackageName)
     {
+
         $this->restrictedPackageName = $restrictedPackageName;
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function getDryRun()
     {
+
         return $this->dryRun;
     }
 
+    /**
+     * @param bool $dryRun
+     *
+     * @return $this
+     */
     public function setDryRun($dryRun)
     {
+
         $this->dryRun = $dryRun;
         return $this;
     }
-
 }

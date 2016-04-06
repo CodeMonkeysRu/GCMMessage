@@ -73,7 +73,7 @@ class Sender
         }
 
         //GCM response: Number of messages on bulk (1001) exceeds maximum allowed (1000)
-        if (count($message->getRegistrationIds()) > 1000) {
+        if (count($message->getRecipients()) > 1000) {
             throw new Exception("Malformed request: Registration Ids exceed the GCM imposed limit of 1000", Exception::MALFORMED_REQUEST);
         }
 
@@ -140,11 +140,11 @@ class Sender
     private function formMessageData(Message $message)
     {
         $data = array(
-            'registration_ids' => $message->getRegistrationIds(),
+            'registration_ids' => $message->getRecipients(),
         );
 
         $dataFields = array(
-            'registration_ids' => 'getRegistrationIds',
+            'registration_ids' => 'getRecipients',
             'collapse_key' => 'getCollapseKey',
             'data' => 'getData',
             'notification' => 'getNotification',
