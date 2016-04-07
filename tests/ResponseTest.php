@@ -23,7 +23,8 @@ class ResponseTest extends PHPUnit_Framework_TestCase
               { "message_id": "1:1516" },
               { "message_id": "1:2342", "registration_id": "32" },
               { "error": "NotRegistered"}
-            ]
+            ],
+            "error": null
           }';
 
         $this->response = new \CodeMonkeysRu\GCM\Response($message, $responseBody);
