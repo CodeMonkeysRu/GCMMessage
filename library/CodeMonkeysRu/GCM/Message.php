@@ -100,6 +100,27 @@ class Message
     private $dryRun = false;
 
     /**
+     * On iOS, use this field to represent content-available in the APNS payload. When a notification or message is
+     * sent and this is set to true, an inactive client app is awoken. On Android, data messages wake the app by
+     * default. On Chrome, currently not supported.
+     *
+     * Optional
+     *
+     * @var bool
+     */
+    private $contentAvailable = true;
+
+    /**
+     * Sets the priority of the message. Valid values are "normal" and "high." On iOS, these correspond to APNs
+     * priority 5 and 10.
+     *
+     * Optional
+     *
+     * @var string
+     */
+    private $priority = 'high';
+
+    /**
      * @param string|array $recipients
      * @param array        $data
      * @param null         $collapseKey
@@ -291,5 +312,41 @@ class Message
 
         $this->dryRun = $dryRun;
         return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getbbContentAvailable()
+    {
+
+        return $this->contentAvailable;
+    }
+
+    /**
+     * @param boolean $contentAvailable
+     */
+    public function setContentAvailable($contentAvailable)
+    {
+
+        $this->contentAvailable = $contentAvailable;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPriority()
+    {
+
+        return $this->priority;
+    }
+
+    /**
+     * @param string $priority
+     */
+    public function setPriority($priority)
+    {
+
+        $this->priority = $priority;
     }
 }
