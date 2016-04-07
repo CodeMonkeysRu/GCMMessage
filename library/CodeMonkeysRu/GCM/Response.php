@@ -45,6 +45,13 @@ class Response
     private $canonicalIds = null;
 
     /**
+     * Holds single message error
+     *
+     * @var string
+     */
+    private $error = null;
+
+    /**
      * Array of objects representing the status of the messages processed.
      * The objects are listed in the same order as the request
      * (i.e., for each registration ID in the request, its result is listed in the same index in the response)
@@ -75,14 +82,19 @@ class Response
         if ($data === null) {
             throw new Exception("Malformed reponse body. " . $responseBody, Exception::MALFORMED_RESPONSE);
         }
-        $this->messageId    = (isset($data['message_id'])) ? $data['message_id'] : null;
-        $this->multicastId  = $data['multicast_id'];
-        $this->failure      = $data['failure'];
-        $this->success      = $data['success'];
-        $this->canonicalIds = $data['canonical_ids'];
-        $this->results      = [];
-        foreach ($message->getRecipients() as $key => $registrationId) {
-            $this->results[$registrationId] = $data['results'][$key];
+
+        if (!$data['error']) {
+            $this->messageId    = (isset($data['message_id'])) ? $data['message_id'] : null;
+            $this->multicastId  = $data['multicast_id'];
+            $this->failure      = $data['failure'];
+            $this->success      = (!$this->multicastId) ? 1 : $data['success'];
+            $this->canonicalIds = $data['canonical_ids'];
+            $this->results      = [];
+            $this->parseResults($message, $data);
+        } else {
+            $this->error = $data['error'];
+            $this->messageId    = (isset($data['message_id'])) ? $data['message_id'] : null;
+            $this->failure = (!isset($data['failure'])) ? 1 : $data['failure'];
         }
     }
 
@@ -138,6 +150,15 @@ class Response
     {
 
         return $this->results;
+    }
+
+    /**
+     * @return string
+     */
+    public function getError()
+    {
+
+        return $this->error;
     }
 
     /**
@@ -220,5 +241,23 @@ class Response
             });
 
         return array_keys($filteredResults);
+    }
+
+    /**
+     * Parse result array with correct data
+     *
+     * @param Message $message
+     * @param array   $response
+     */
+    private function parseResults(Message $message, array $response)
+    {
+
+        if (is_array($message->getRecipients())) {
+            foreach ($message->getRecipients() as $key => $registrationId) {
+                $this->results[$registrationId] = $response['results'][$key];
+            }
+        } else {
+            $this->results[$message->getRecipients()] = $response['results'];
+        }
     }
 }
