@@ -317,7 +317,7 @@ class Message
     /**
      * @return boolean
      */
-    public function getbbContentAvailable()
+    public function getContentAvailable()
     {
 
         return $this->contentAvailable;

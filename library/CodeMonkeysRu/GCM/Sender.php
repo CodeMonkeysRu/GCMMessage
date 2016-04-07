@@ -166,7 +166,7 @@ class Sender
             'time_to_live'            => 'getTtl',
             'restricted_package_name' => 'getRestrictedPackageName',
             'dry_run'                 => 'getDryRun',
-            'content_available'       => 'getbbContentAvailable',
+            'content_available'       => 'getContentAvailable',
             'priority'                => 'getPriority'
         ];
 
