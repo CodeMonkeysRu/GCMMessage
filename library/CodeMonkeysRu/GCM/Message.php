@@ -86,6 +86,17 @@ class Message
     private $restrictedPackageName = null;
 
     /**
+     * On iOS, use this field to represent content-available in the APNS payload. When a
+     * notification or message is sent and this is set to true, an inactive client app is
+     * awoken. On Android, data messages wake the app by default.
+     *
+     * Optional.
+     *
+     * @var bool
+     */
+    private $contentAvailable = true;
+
+    /**
      * Allows developers to test their request without actually sending a message.
      *
      * Optional.
@@ -201,4 +212,14 @@ class Message
         return $this;
     }
 
+    public function getContentAvailable()
+    {
+        return $this->contentAvailable;
+    }
+
+    public function setContentAvailable($contentAvailable)
+    {
+        $this->contentAvailable = $contentAvailable;
+        return $this;
+    }
 }
