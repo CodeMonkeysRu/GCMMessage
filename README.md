@@ -131,6 +131,7 @@ $sender = new GCM\Sender("YOUR GOOGLE API KEY", false, "/path/to/cacert.crt");
 
 ChangeLog
 ----------------------
+* v0.3 - Content-available added (https://github.com/CodeMonkeysRu/GCMMessage/pull/11)
 * v0.2 - Notifications added
 * v0.1 - Initial release
 
