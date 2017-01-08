@@ -100,10 +100,6 @@ class Response
         }
     }
     
-    public function getRawResponse() {
-        return $this->responseBody;
-    }
-    
     public function getResponseHeadersArray() {
         return $this->responseHeaders;
     }
