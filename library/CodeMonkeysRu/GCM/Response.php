@@ -82,8 +82,8 @@ class Response
 		$this->mustRetry = true;
                	$this->waitSeconds = (int) explode(" ", $header)[1];
 		break;
-	        }
-	    }	
+	    }
+	}	
 			
         $data = \json_decode($responseBody, true);
         if ($data === null) {
