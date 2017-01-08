@@ -18,7 +18,7 @@ class Sender
 
     /**
      * Path to CA file (due to cURL 7.10 changes; you can get it from here: http://curl.haxx.se/docs/caextract.html)
-     * 
+     *
      * @var string
      */
     private $caInfoPath = false;
@@ -74,7 +74,10 @@ class Sender
 
         //GCM response: Number of messages on bulk (1001) exceeds maximum allowed (1000)
         if (count($message->getRegistrationIds()) > 1000) {
-            throw new Exception("Malformed request: Registration Ids exceed the GCM imposed limit of 1000", Exception::MALFORMED_REQUEST);
+            throw new Exception(
+                "Malformed request: Registration Ids exceed the GCM imposed limit of 1000",
+                Exception::MALFORMED_REQUEST
+            );
         }
 
         $rawData = $this->formMessageData($message);
@@ -175,7 +178,9 @@ class Sender
      */
     private function validatePayloadSize(array $rawData, $fieldName, $maxSize)
     {
-        if (!isset($rawData[$fieldName])) return;
+        if (!isset($rawData[$fieldName])) {
+            return;
+        }
         if (strlen(json_encode($rawData[$fieldName])) > $maxSize) {
             throw new Exception(
                 ucfirst($fieldName)." payload is to big (max {$maxSize} bytes)",
@@ -183,5 +188,4 @@ class Sender
             );
         }
     }
-
 }

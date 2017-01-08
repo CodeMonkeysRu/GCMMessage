@@ -9,5 +9,4 @@ class Exception extends \Exception
     const MALFORMED_REQUEST = 3;
     const UNKNOWN_ERROR = 4;
     const MALFORMED_RESPONSE = 5;
-
 }

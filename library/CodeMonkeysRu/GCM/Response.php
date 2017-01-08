@@ -43,7 +43,8 @@ class Response
      *      message_id: String representing the message when it was successfully processed.
      *      registration_id: If set, means that GCM processed the message but it has another canonical
      *                       registration ID for that device, so sender should replace the IDs on future requests
-     *                       (otherwise they might be rejected). This field is never set if there is an error in the request.
+     *                       (otherwise they might be rejected).
+     *                       This field is never set if there is an error in the request.
      *      error: String describing an error that occurred while processing the message for that recipient.
      *             The possible values are the same as documented in the above table, plus "Unavailable"
      *             (meaning GCM servers were busy and could not process the message for that particular recipient,
@@ -105,14 +106,16 @@ class Response
         if ($this->getNewRegistrationIdsCount() == 0) {
             return array();
         }
-        $filteredResults = array_filter($this->results,
-            function($result) {
+        $filteredResults = array_filter(
+            $this->results,
+            function ($result) {
                 return isset($result['registration_id']);
-            });
+            }
+        );
 
-        $data = array_map(function($result) {
+        $data = array_map(function ($result) {
                 return $result['registration_id'];
-            }, $filteredResults);
+        }, $filteredResults);
 
         return $data;
     }
@@ -128,8 +131,9 @@ class Response
         if ($this->getFailureCount() == 0) {
             return array();
         }
-        $filteredResults = array_filter($this->results,
-            function($result) {
+        $filteredResults = array_filter(
+            $this->results,
+            function ($result) {
                 return (
                     isset($result['error'])
                     &&
@@ -139,7 +143,8 @@ class Response
                     ($result['error'] == "InvalidRegistration")
                     )
                     );
-            });
+            }
+        );
 
         return array_keys($filteredResults);
     }
@@ -157,16 +162,17 @@ class Response
         if ($this->getFailureCount() == 0) {
             return array();
         }
-        $filteredResults = array_filter($this->results,
-            function($result) {
+        $filteredResults = array_filter(
+            $this->results,
+            function ($result) {
                 return (
                     isset($result['error'])
                     &&
                     ($result['error'] == "Unavailable")
                     );
-            });
+            }
+        );
 
         return array_keys($filteredResults);
     }
-
 }
