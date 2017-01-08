@@ -67,7 +67,6 @@ try {
 
         //Schedule to resend messages to unavailable devices
         $unavailableIds = $response->getUnavailableRegistrationIds();
-        //Suggestion: try again, using exponential back-off. Or put in a queue and use a cronjob.
         //TODO
     }
 } catch (GCM\Exception $e) {
@@ -141,7 +140,6 @@ try {
 
         //Schedule to resend messages to unavailable devices
         $unavailableIds = $response->getUnavailableRegistrationIds();
-        //Suggestion: try again, using exponential back-off. Or put in a queue and use a cronjob.
         //TODO
     }
 } catch (GCM\Exception $e) {
