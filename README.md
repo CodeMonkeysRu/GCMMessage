@@ -1,7 +1,8 @@
 Google Cloud Messaging (GCM) PHP Server Library
 --------------------------------------------
 
-A PHP library for sending messages to devices registered through Google Cloud Messaging.
+A PHP library for sending messages to devices registered through Google Cloud Messaging
+[![Build Status](https://travis-ci.org/CodeMonkeysRu/GCMMessage.svg?branch=master)](https://travis-ci.org/CodeMonkeysRu/GCMMessage)
 
 See:
 http://developer.android.com/guide/google/gcm/index.html
@@ -131,6 +132,7 @@ $sender = new GCM\Sender("YOUR GOOGLE API KEY", false, "/path/to/cacert.crt");
 
 ChangeLog
 ----------------------
+* v0.4 - Code cleanup, PHP5.5 support dropped
 * v0.3 - Content-available added (https://github.com/CodeMonkeysRu/GCMMessage/pull/11)
 * v0.2 - Notifications added
 * v0.1 - Initial release

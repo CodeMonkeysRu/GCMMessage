@@ -1,10 +1,13 @@
 <?php
+namespace CodeMonkeysRu\GCM;
 
-class ResponseTest extends PHPUnit_Framework_TestCase
+/**
+ * Class ResponseTest
+ */
+class ResponseTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     *
      * @var \CodeMonkeysRu\GCM\Response
      */
     private $response;
@@ -43,5 +46,4 @@ class ResponseTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(array(2), $this->response->getUnavailableRegistrationIds());
     }
-
 }

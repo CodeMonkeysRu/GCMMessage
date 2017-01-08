@@ -1,6 +1,10 @@
 <?php
+namespace CodeMonkeysRu\GCM;
 
-class SenderTest extends PHPUnit_Framework_TestCase
+/**
+ * Class SenderTest
+ */
+class SenderTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -41,5 +45,4 @@ class SenderTest extends PHPUnit_Framework_TestCase
             ->setNotification($notification);
         $sender->send($message);
     }
-
 }
