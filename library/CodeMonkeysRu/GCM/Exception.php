@@ -11,11 +11,9 @@ class Exception extends \Exception
     const MALFORMED_RESPONSE = 5;
     const INTERNAL_SERVER_ERROR = 6;
     const SERVICE_UNAVAILABLE = 7;
-    const INVALID_DATA_KEY = 8; //payload uses a data key used by GCM
+    const INVALID_DATA_KEY = 8;
     const CURL_ERROR = 9;
-    
-    // mismatch sender id (wrong sender id in app), DeviceMessageRateExceeded handled case-by-case.
-
+	const MISMATCH_SENDER_ID = 10;
 }
 
 /*

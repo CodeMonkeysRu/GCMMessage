@@ -32,11 +32,33 @@ class Response
      */
     private $canonicalIds = null;
     
-    //raw response.
+    /**
+     * Raw response.
+     *
+     * @var string
+     */
     private $responseBody = null;
     
-    //response headers.
+    /**
+     * Response headers.
+     *
+     * @var string[]
+     */
     private $responseHeaders = null;
+	
+    /**
+     * Did Google demand that we try again.
+     *
+     * @var boolean
+     */
+	private $mustRetry = null;
+	
+    /**
+     * Number of seconds to wait.
+     *
+     * @var integer
+     */
+	private $waitSeconds = null;
 
     /**
      * Array of objects representing the status of the messages processed.
@@ -60,7 +82,17 @@ class Response
     {
         $this->responseBody = $responseBody;
         $this->responseHeaders = $responseHeaders;
-            
+           
+		$this->mustRetry = false;  
+		    
+	    foreach($responseHeaders as $header) {
+            if (strpos($header, 'Retry-After') !== false) {
+				$this->mustRetry = true;
+               	$this->waitSeconds = (int) explode(" ", $header)[1];
+				break;
+	        }
+	    }	
+			
         $data = \json_decode($responseBody, true);
         if ($data === null) {
             throw new Exception("Malformed reponse body. ". $responseBody, Exception::MALFORMED_RESPONSE);
@@ -87,6 +119,16 @@ class Response
     public function getMulticastId()
     {
         return $this->multicastId;
+    }
+	
+    public function getMustRetry()
+    {
+        return $this->mustRetry;
+    }
+	
+    public function getWaitSeconds()
+    {
+        return $this->waitSeconds;
     }
 
     public function getSuccessCount()
