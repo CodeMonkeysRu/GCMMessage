@@ -13,7 +13,7 @@ class Exception extends \Exception
     const SERVICE_UNAVAILABLE = 7;
     const INVALID_DATA_KEY = 8;
     const CURL_ERROR = 9;
-	const MISMATCH_SENDER_ID = 10;
+    const MISMATCH_SENDER_ID = 10;
 }
 
 /*
