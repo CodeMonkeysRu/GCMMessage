@@ -51,14 +51,14 @@ class Response
      *
      * @var boolean
      */
-	private $mustRetry = null;
+    private $mustRetry = null;
 	
     /**
      * Number of seconds to wait.
      *
      * @var integer
      */
-	private $waitSeconds = null;
+    private $waitSeconds = null;
 
     /**
      * Array of objects representing the status of the messages processed.
@@ -70,7 +70,7 @@ class Response
      *                       registration ID for that device, so sender should replace the IDs on future requests
      *                       (otherwise they might be rejected). This field is never set if there is an error in the request.
      *      error: String describing an error that occurred while processing the message for that recipient.
-     *             The possible values are the same as documented in the above table, plus "Unavailable"
+     *             The possible values are the same as documented in the above table. Note in particular "Unavailable"
      *             (meaning GCM servers were busy and could not process the message for that particular recipient,
      *             so it could be retried).
      *
@@ -83,13 +83,13 @@ class Response
         $this->responseBody = $responseBody;
         $this->responseHeaders = $responseHeaders;
            
-		$this->mustRetry = false;  
+	$this->mustRetry = false;  
 		    
-	    foreach($responseHeaders as $header) {
+	foreach($responseHeaders as $header) {
             if (strpos($header, 'Retry-After') !== false) {
-				$this->mustRetry = true;
+		$this->mustRetry = true;
                	$this->waitSeconds = (int) explode(" ", $header)[1];
-				break;
+		break;
 	        }
 	    }	
 			
