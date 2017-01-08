@@ -138,11 +138,11 @@ class Response
                     isset($result['error'])
                     &&
                     (
-                    ($result['error'] == "NotRegistered")
-                    ||
-                    ($result['error'] == "InvalidRegistration")
+                        ($result['error'] == "NotRegistered")
+                        ||
+                        ($result['error'] == "InvalidRegistration")
                     )
-                    );
+                );
             }
         );
 
@@ -153,7 +153,7 @@ class Response
      * Returns an array of registration ids for which you must resend a message (?),
      * cause devices aren't available now.
      *
-     * @TODO: check if it be auto sended later
+     * @TODO: check if it be auto sent later
      *
      * @return array
      */
@@ -169,7 +169,7 @@ class Response
                     isset($result['error'])
                     &&
                     ($result['error'] == "Unavailable")
-                    );
+                );
             }
         );
 

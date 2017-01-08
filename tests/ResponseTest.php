@@ -8,7 +8,6 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     *
      * @var \CodeMonkeysRu\GCM\Response
      */
     private $response;
