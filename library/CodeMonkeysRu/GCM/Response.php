@@ -33,13 +33,6 @@ class Response
     private $canonicalIds = null;
     
     /**
-     * Raw response.
-     *
-     * @var string
-     */
-    private $responseBody = null;
-    
-    /**
      * Response headers.
      *
      * @var string[]
@@ -80,7 +73,6 @@ class Response
 
     public function __construct(Message $message, $responseBody, $responseHeaders)
     {
-        $this->responseBody = $responseBody;
         $this->responseHeaders = $responseHeaders;
            
 	$this->mustRetry = false;  
