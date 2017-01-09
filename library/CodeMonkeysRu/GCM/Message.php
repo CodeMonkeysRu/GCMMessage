@@ -97,6 +97,21 @@ class Message
     private $contentAvailable = true;
 
     /**
+     * Sets the priority of the message. Valid values are "normal" and "high." On iOS, these
+     * correspond to APNs priority 5 and 10. By default, messages are sent with normal
+     * priority. Normal priority optimizes the client app's battery consumption, and should
+     * be used unless immediate delivery is required. For messages with normal priority, the
+     * app may receive the message with unspecified delay.
+     * When a message is sent with high priority, it is sent immediately, and the app can wake
+     * a sleeping device and open a network connection to your server.
+     *
+     * Optional.
+     *
+     * @var string
+     */
+    private $priority = 'normal';
+
+    /**
      * Allows developers to test their request without actually sending a message.
      *
      * Optional.
@@ -220,6 +235,19 @@ class Message
     public function setContentAvailable($contentAvailable)
     {
         $this->contentAvailable = $contentAvailable;
+        return $this;
+    }
+
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    public function setPriority($priority)
+    {
+        if (in_array($priority, array('high', 'normal'), true)) {
+            $this->priority = $priority;
+        }
         return $this;
     }
 }
