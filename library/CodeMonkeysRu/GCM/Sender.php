@@ -125,31 +125,24 @@ class Sender
 
         curl_close($ch);
         
-        if ($resultHttpCode == "200") {
-            ;//check for errors wrt individual devices later with the Response object.
+        switch ($resultHttpCode) {
+            case "200":
+                //All fine. Continue response processing.
+                break;
+
+            case "400":
+                throw new Exception('Malformed request. '.$resultBody, Exception::MALFORMED_REQUEST);
+                break;
+
+            case "401":
+                throw new Exception('Authentication Error. '.$resultBody, Exception::AUTHENTICATION_ERROR);
+                break;
+
+            default:
+                //TODO: Retry-after
+                throw new Exception("Unknown error. ".$resultBody, Exception::UNKNOWN_ERROR);
+                break;
         }
-        
-        elseif ($resultHttpCode == "400") {
-            throw new Exception('Malformed request. '. $resultBody, Exception::MALFORMED_REQUEST);
-        }
-        
-        elseif ($resultHttpCode == "401") {
-            throw new Exception('Authentication Error. '. $resultBody, Exception::AUTHENTICATION_ERROR);
-        }
-        
-        elseif ($resultHttpCode == "500") {
-            throw new Exception('Internal Server Error. ' . $resultBody, Exception::INTERNAL_SERVER_ERROR);
-        }
-        
-        elseif ((600 > (int) $resultHttpCode) && ((int) $resultHttpCode > 500)) {
-            throw new Exception('Service Unavailable. ' . $resultBody, Exception::SERVICE_UNAVAILABLE);
-        }
-        
-        else {
-            throw new Exception("Unknown error. ". $resultBody, Exception::UNKNOWN_ERROR);
-        }
-        
-       
         
         return new Response($message, $resultBody, $responseHeaders);
     }
@@ -207,25 +200,3 @@ class Sender
         }
     }
 }
-
-/*
-Copyright (c) 2014 Vladimir Savenkov
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/

@@ -37,21 +37,36 @@ class Response
      *
      * @var string[]
      */
-    private $responseHeaders = null;
+    private $responseHeaders = [];
 	
     /**
      * Did Google demand that we try again.
      *
      * @var boolean
      */
-    private $mustRetry = null;
+	private $mustRetry = false;
 	
     /**
      * Number of seconds to wait.
      *
      * @var integer
      */
-    private $waitSeconds = null;
+	private $waitSeconds = null;
+	
+    /**
+     * Did you use a reserved data key?
+     *
+     * @var boolean
+     */
+	private $existsInvalidDataKey = false;
+	
+    /**
+     * Did one of your clients register with the wrong senderId?
+     * If one of them did, then presumably they all did.
+     * 
+     * @var boolean
+     */
+	private $existsMismatchSenderId = false;
 
     /**
      * Array of objects representing the status of the messages processed.
@@ -63,7 +78,7 @@ class Response
      *                       registration ID for that device, so sender should replace the IDs on future requests
      *                       (otherwise they might be rejected). This field is never set if there is an error in the request.
      *      error: String describing an error that occurred while processing the message for that recipient.
-     *             The possible values are the same as documented in the above table. Note in particular "Unavailable"
+     *             The possible values are the same as documented in the above table, plus "Unavailable"
      *             (meaning GCM servers were busy and could not process the message for that particular recipient,
      *             so it could be retried).
      *
@@ -75,15 +90,15 @@ class Response
     {
         $this->responseHeaders = $responseHeaders;
            
-	$this->mustRetry = false;  
+		$this->mustRetry = false;  
 		    
-	foreach($responseHeaders as $header) {
+	    foreach($responseHeaders as $header) {
             if (strpos($header, 'Retry-After') !== false) {
-		$this->mustRetry = true;
+				$this->mustRetry = true;
                	$this->waitSeconds = (int) explode(" ", $header)[1];
-		break;
-	    }
-	}	
+				break;
+	        }
+	    }	
 			
         $data = \json_decode($responseBody, true);
         if ($data === null) {
@@ -93,14 +108,30 @@ class Response
         $this->failure = $data['failure'];
         $this->success = $data['success'];
         $this->canonicalIds = $data['canonical_ids'];
+		$this->existsInvalidDataKey = false;
+		$this->existsMismatchSenderId = false;
         $this->results = array();
         
         foreach ($message->getRegistrationIds() as $key => $registrationId) {
-            $this->results[$registrationId] = $data['results'][$key];
+			$result = $data['results'][$key];
+			if (isset($result['error'])) {
+				switch ($result['error']) {
+					case "InvalidDataKey":
+						$this->existsInvalidDataKey = true;
+						break;
+					case "MismatchSenderId":
+						$this->existsMismatchSenderId = true;
+						break;
+					default:
+						break;
+				}
+			}
+			$this->results[$registrationId] = $result; 
         }
+		$result = null;
     }
     
-    public function getResponseHeadersArray() {
+    public function getResponseHeaders() {
         return $this->responseHeaders;
     }
     
@@ -124,14 +155,19 @@ class Response
         return $this->success;
     }
     
-    public function getTotallyNormalCount()
-    {
-        return($this->success - $this->canonicalIds);
-    }    
-    
     public function getFailureCount() //both implementation errors and server errors are included here.
     {
         return $this->failure;
+    }
+	
+    public function getExistsInvalidDataKey()
+	{
+        return $this->existsInvalidDataKey;
+    }
+	
+    public function getExistsMismatchSenderId()
+	{
+        return $this->existsMismatchSenderId;
     }
 
     public function getNewRegistrationIdsCount()
@@ -139,30 +175,11 @@ class Response
         return $this->canonicalIds;
     }
     
-    public function isTotallyNormal()
-    {
-        return (($this->getNewRegistrationIdsCount() == 0) && ($this->getFailureCount() == 0));
-    }
-
     public function getResults()
     {
         return $this->results;
     }
-    
-    /**
-     * Return a numeric array of registration ids which worked without any error or need to update.
-     */
-    
-    public function getAsWrittenIds()
-    {        
-        $filteredResults = array_filter($this->results,
-            function($result) {
-                return isset($result['message_id']) && !isset($result['registration_id']);
-            });
-
-        return array_keys($filteredResults);
-    }
-    
+        
     /**
      * Return an array of expired registration ids linked to new id
      * All old registration ids must be updated to new ones in DB
@@ -185,12 +202,6 @@ class Response
 
         return $data;
     }
-    
-    public function someIdsNew()
-    {
-        $bool = (count($this->getNewRegistrationIds()) != 0);
-        return $bool;
-    }
 
     /**
      * Returns an array containing invalid registration ids
@@ -212,8 +223,6 @@ class Response
                     ($result['error'] == "NotRegistered")
                     ||
                     ($result['error'] == "InvalidRegistration")                    
-                    ||
-                    ($result['error'] == "DeviceMessageRateExceeded")
                     )
                     );
             });
@@ -221,11 +230,6 @@ class Response
         return array_keys($filteredResults);
     }
 
-    public function someIdsInvalid()
-    {
-        $bool = (count($this->getInvalidRegistrationIds()) != 0);
-        return $bool;
-    }
 
     /**
      * Returns an array of registration ids for which you must resend a message (?),
@@ -249,44 +253,21 @@ class Response
                     ($result['error'] == "Unavailable")
                     ||
                     ($result['error'] == "InternalServerError")
+                    ||
+                    ($result['error'] == "DeviceMessageRateExceeded")
                     )
                     );
             });
 
         return array_keys($filteredResults);
     }
-    
-    public function someIdsUnavailable() {
-        $bool = (count($this->getUnavailableRegistrationIds()) != 0);
-        return $bool;
-    }
-
-    //invalid data key
-    
-    public function getInvalidDataKeysIds() {
-        if ($this->getFailureCount() == 0) {
-            return array();
-        }
-        $filteredResults = array_filter($this->results,
-            function($result) {
-                return (
-                    isset($result['error'])
-                    &&
-                    ($result['error'] == "InvalidDataKey")
-                    );
-            });
-
-        return array_keys($filteredResults);
-    
-    }
-    
-    public function existsInvalidDataKey() {
-        $bool = (count($this->getInvalidDataKeysIds()) != 0);
-        return $bool;
-    }
-    
-    //mismatch sender id
-    
+	
+    /**
+     * Returns an array of registration ids who registered
+     * for pushes using the wrong senderId.
+     *
+     * @return array
+     */
     public function getMismatchSenderIdIds() {
         if ($this->getFailureCount() == 0) {
             return array();
@@ -302,12 +283,6 @@ class Response
 
         return array_keys($filteredResults);
     }
-    
-    public function existsMismatchSenderId() {
-        $bool = (count($this->getMismatchSenderIdIds()) != 0);
-        return $bool;
-    }
-
 }
 
 /*
