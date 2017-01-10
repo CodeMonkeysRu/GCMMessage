@@ -90,37 +90,32 @@ class Sender
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, $this->gcmUrl);
-
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        
         curl_setopt($ch, CURLOPT_HEADER, 1); // return HTTP headers with response
-        
-        
+
         if ($this->caInfoPath !== false) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             curl_setopt($ch, CURLOPT_CAINFO, $this->caInfoPath);
         } else {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         }
-        
-        
+
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
         $resp = curl_exec($ch);
  
         if ($resp === FALSE) {
             throw new Exception('cURL error: '. curl_error($ch), Exception::CURL_ERROR);
-         
         }
-        
+
         list($responseHeaders, $resultBody) = explode("\r\n\r\n", $resp, 2);
         // $headers now has a string of the HTTP headers
         // $resultBody is the body of the HTTP response
 
         $responseHeaders = explode("\n", $responseHeaders);
-        
+
         $resultHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         curl_close($ch);
