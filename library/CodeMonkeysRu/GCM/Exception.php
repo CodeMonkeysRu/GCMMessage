@@ -11,5 +11,5 @@ class Exception extends \Exception
     const MALFORMED_RESPONSE = 5;
     const INVALID_DATA_KEY = 6;
     const CURL_ERROR = 7;
-	const MISMATCH_SENDER_ID = 8;
+    const MISMATCH_SENDER_ID = 8;
 }
