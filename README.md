@@ -49,13 +49,13 @@ try {
     
         if ($response->existsInvalidDataKey()) {
             //You used a reserved data key
-		    $error_msg = 'Invalid data key in payload. ' . json_encode($message->getNotification());
+	    $error_msg = 'Invalid data key in payload. ' . json_encode($message->getNotification());
             throw new Exception($error_msg, Exception::INVALID_DATA_KEY);
         }
         
         if ($response->existsMismatchSenderId()) {
             //A client sent the wrong senderId when it registered for pushes
-		    $error_msg = 'Mismatch senderId. Problem clients are ' . json_encode($response->getMismatchSenderIdIds());
+	    $error_msg = 'Mismatch senderId. Problem clients are ' . json_encode($response->getMismatchSenderIdIds());
             throw new Exception($error_msg, Exception::MISMATCH_SENDER_ID);
         } 
     
@@ -122,13 +122,13 @@ try {
     
         if ($response->existsInvalidDataKey()) {
             //You used a reserved data key
-		    $error_msg = 'Invalid data key in payload. ' . json_encode($message->getNotification());
+	    $error_msg = 'Invalid data key in payload. ' . json_encode($message->getNotification());
             throw new Exception($error_msg, Exception::INVALID_DATA_KEY);
         }
         
         if ($response->existsMismatchSenderId()) {
             //A client sent the wrong senderId when it registered for pushes
-		    $error_msg = 'Mismatch senderId. Problem clients are ' . json_encode($response->getMismatchSenderIdIds());
+	    $error_msg = 'Mismatch senderId. Problem clients are ' . json_encode($response->getMismatchSenderIdIds());
             throw new Exception($error_msg, Exception::MISMATCH_SENDER_ID);
         } 
     
