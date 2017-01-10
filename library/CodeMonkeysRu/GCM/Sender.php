@@ -163,7 +163,7 @@ class Sender
             'registration_ids' => 'getRegistrationIds',
             'collapse_key' => 'getCollapseKey',
             'data' => 'getData',
-			'notification' => 'getNotification',
+	    'notification' => 'getNotification',
             'delay_while_idle' => 'getDelayWhileIdle',
             'time_to_live' => 'getTtl',
             'restricted_package_name' => 'getRestrictedPackageName',
