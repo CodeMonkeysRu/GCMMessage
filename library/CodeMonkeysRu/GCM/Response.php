@@ -155,7 +155,12 @@ class Response
         return $this->success;
     }
     
-    public function getFailureCount() //both implementation errors and server errors are included here.
+    /**
+     * Both implementation errors and server errors are included here.
+     *
+     * @var integer
+     */
+    public function getFailureCount()
     {
         return $this->failure;
     }
