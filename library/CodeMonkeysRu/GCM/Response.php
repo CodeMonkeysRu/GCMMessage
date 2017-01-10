@@ -158,7 +158,7 @@ class Response
     /**
      * Both implementation errors and server errors are included here.
      *
-     * @var integer
+     * @return integer
      */
     public function getFailureCount()
     {
