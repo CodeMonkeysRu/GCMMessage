@@ -102,7 +102,7 @@ class Response
 			
         $data = \json_decode($responseBody, true);
         if ($data === null) {
-            throw new Exception("Malformed reponse body. ". $responseBody, Exception::MALFORMED_RESPONSE);
+            throw new Exception("Malformed reponse body. ".$responseBody, Exception::MALFORMED_RESPONSE);
         }
         $this->multicastId = $data['multicast_id'];
         $this->failure = $data['failure'];
