@@ -179,12 +179,12 @@ class Response
     {
         return $this->canonicalIds;
     }
-    
+
     public function getResults()
     {
         return $this->results;
     }
-        
+
     /**
      * Return an array of expired registration ids linked to new id
      * All old registration ids must be updated to new ones in DB
@@ -227,7 +227,7 @@ class Response
                     (
                     ($result['error'] == "NotRegistered")
                     ||
-                    ($result['error'] == "InvalidRegistration")                    
+                    ($result['error'] == "InvalidRegistration")
                     )
                     );
             });
