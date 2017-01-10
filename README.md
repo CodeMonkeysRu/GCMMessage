@@ -31,12 +31,6 @@ $message
 try {
     $response = $sender->send($message);
 
-    if ($response->getMustRetry() {
-        $waitSeconds = $response->getWaitSeconds();
-        //Try again after that many seconds, and use exponential backoff subsequently, as needed.
-        //TODO
-    }
-
     if ($response->getNewRegistrationIdsCount() > 0) {
         $newRegistrationIds = $response->getNewRegistrationIds();
         foreach ($newRegistrationIds as $oldRegistrationId => $newRegistrationId){
@@ -46,21 +40,7 @@ try {
     }
 
     if ($response->getFailureCount() > 0) {
-    
-        if ($response->getExistsInvalidDataKey()) {
-            //You used a reserved data key
-	        $error_msg = 'Invalid data key in payload. ' . json_encode($message->getNotification());
-            throw new Exception($error_msg, Exception::INVALID_DATA_KEY);
-        }
-        
-        if ($response->getExistsMismatchSenderId()) {
-            //A client sent the wrong senderId when it registered for pushes
-	        $error_msg = 'Mismatch senderId. Problem clients are '
-                . json_encode($response->getMismatchSenderIdIds());
-            throw new Exception($error_msg, Exception::MISMATCH_SENDER_ID);
-        } 
-    
-        $invalidRegistrationIds = $response->getInvalidRegistrationIds();
+        $invalidRegistrationIds = $GCMresponse->getInvalidRegistrationIds();
         foreach($invalidRegistrationIds as $invalidRegistrationId) {
             //Remove $invalidRegistrationId from DB
             //TODO
@@ -78,9 +58,6 @@ try {
         case GCM\Exception::MALFORMED_REQUEST:
         case GCM\Exception::UNKNOWN_ERROR:
         case GCM\Exception::MALFORMED_RESPONSE:
-        case GCM\Exception::INVALID_DATA_KEY: //you used a forbidden key in the notification
-        case GCM\Exception::CURL_ERROR: //problem posting to gcm server
-        case GCM\Exception::MISMATCH_SENDER_ID; //a client sent the wrong senderId when it registered for pushes
             //Deal with it
             break;
     }
@@ -103,12 +80,6 @@ try {
         "collapse_key"
     );
 
-    if ($response->getMustRetry() {
-        $waitSeconds = $response->getWaitSeconds();
-        //Try again after that many seconds, and use exponential backoff subsequently, as needed.
-        //TODO
-    }
-
     if ($response->getNewRegistrationIdsCount() > 0) {
         $newRegistrationIds = $response->getNewRegistrationIds();
         foreach ($newRegistrationIds as $oldRegistrationId => $newRegistrationId){
@@ -118,21 +89,7 @@ try {
     }
 
     if ($response->getFailureCount() > 0) {
-    
-        if ($response->getExistsInvalidDataKey()) {
-            //You used a reserved data key
-	    $error_msg = 'Invalid data key in payload. ' . json_encode($message->getNotification());
-            throw new Exception($error_msg, Exception::INVALID_DATA_KEY);
-        }
-        
-        if ($response->getExistsMismatchSenderId()) {
-            //A client sent the wrong senderId when it registered for pushes
-            $error_msg = 'Mismatch senderId. Problem clients are '
-            . json_encode($response->getMismatchSenderIdIds());
-            throw new Exception($error_msg, Exception::MISMATCH_SENDER_ID);
-        } 
-    
-        $invalidRegistrationIds = $response->getInvalidRegistrationIds();
+        $invalidRegistrationIds = $GCMresponse->getInvalidRegistrationIds();
         foreach($invalidRegistrationIds as $invalidRegistrationId) {
             //Remove $invalidRegistrationId from DB
             //TODO
@@ -150,9 +107,6 @@ try {
         case GCM\Exception::MALFORMED_REQUEST:
         case GCM\Exception::UNKNOWN_ERROR:
         case GCM\Exception::MALFORMED_RESPONSE:
-        case GCM\Exception::INVALID_DATA_KEY: //you used a forbidden key in the notification
-        case GCM\Exception::CURL_ERROR: //problem posting to gcm server
-        case GCM\Exception::MISMATCH_SENDER_ID; //a client sent the wrong senderId when it registered for pushes
             //Deal with it
             break;
     }
