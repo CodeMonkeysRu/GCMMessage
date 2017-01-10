@@ -54,7 +54,7 @@ class Message
      * @var array|null
      */
     private $notification = null;
-    
+
     /**
      * Indicates that the message should not be sent immediately if the device is idle.
      * The server will wait for the device to become active, and then only the last message
@@ -156,7 +156,7 @@ class Message
         $this->data = $data;
         return $this;
     }
-    
+
     public function getNotification()
     {
         return $this->notification;
