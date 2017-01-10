@@ -77,8 +77,6 @@ try {
         case GCM\Exception::MALFORMED_REQUEST:
         case GCM\Exception::UNKNOWN_ERROR:
         case GCM\Exception::MALFORMED_RESPONSE:
-        case GCM\Exception::INTERNAL_SERVER_ERROR: //gcm server problem
-        case GCM\Exception::SERVICE_UNAVAILABLE: //gcm server problem
         case GCM\Exception::INVALID_DATA_KEY: //you used a forbidden key in the notification
         case GCM\Exception::CURL_ERROR: //problem posting to gcm server
         case GCM\Exception::MISMATCH_SENDER_ID; //a client sent the wrong senderId when it registered for pushes
@@ -150,8 +148,6 @@ try {
         case GCM\Exception::MALFORMED_REQUEST:
         case GCM\Exception::UNKNOWN_ERROR:
         case GCM\Exception::MALFORMED_RESPONSE:
-        case GCM\Exception::INTERNAL_SERVER_ERROR: //gcm server problem
-        case GCM\Exception::SERVICE_UNAVAILABLE: //gcm server problem
         case GCM\Exception::INVALID_DATA_KEY: //you used a forbidden key in the notification
         case GCM\Exception::CURL_ERROR: //problem posting to gcm server
         case GCM\Exception::MISMATCH_SENDER_ID; //a client sent the wrong senderId when it registered for pushes
