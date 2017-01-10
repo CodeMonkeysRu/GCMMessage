@@ -114,7 +114,7 @@ class Response
         
         foreach ($message->getRegistrationIds() as $key => $registrationId) {
             $result = $data['results'][$key];
-       	    if (isset($result['error'])) {
+            if (isset($result['error'])) {
 	        switch ($result['error']) {
 		    case "InvalidDataKey":
 		        $this->existsInvalidDataKey = true;
