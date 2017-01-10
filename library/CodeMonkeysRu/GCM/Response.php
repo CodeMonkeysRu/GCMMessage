@@ -44,21 +44,21 @@ class Response
      *
      * @var boolean
      */
-	private $mustRetry = false;
+    private $mustRetry = false;
 	
     /**
      * Number of seconds to wait.
      *
      * @var integer
      */
-	private $waitSeconds = null;
+    private $waitSeconds = null;
 	
     /**
      * Did you use a reserved data key?
      *
      * @var boolean
      */
-	private $existsInvalidDataKey = false;
+    private $existsInvalidDataKey = false;
 	
     /**
      * Did one of your clients register with the wrong senderId?
@@ -66,7 +66,7 @@ class Response
      * 
      * @var boolean
      */
-	private $existsMismatchSenderId = false;
+    private $existsMismatchSenderId = false;
 
     /**
      * Array of objects representing the status of the messages processed.
@@ -90,15 +90,15 @@ class Response
     {
         $this->responseHeaders = $responseHeaders;
            
-		$this->mustRetry = false;  
+        $this->mustRetry = false;  
 		    
-	    foreach($responseHeaders as $header) {
+	foreach($responseHeaders as $header) {
             if (strpos($header, 'Retry-After') !== false) {
-				$this->mustRetry = true;
-               	$this->waitSeconds = (int) explode(" ", $header)[1];
-				break;
-	        }
-	    }	
+                $this->mustRetry = true;
+              	$this->waitSeconds = (int) explode(" ", $header)[1];
+		break;
+	    }
+	}	
 			
         $data = \json_decode($responseBody, true);
         if ($data === null) {
@@ -108,27 +108,27 @@ class Response
         $this->failure = $data['failure'];
         $this->success = $data['success'];
         $this->canonicalIds = $data['canonical_ids'];
-		$this->existsInvalidDataKey = false;
-		$this->existsMismatchSenderId = false;
+        $this->existsInvalidDataKey = false;
+        $this->existsMismatchSenderId = false;
         $this->results = array();
         
         foreach ($message->getRegistrationIds() as $key => $registrationId) {
-			$result = $data['results'][$key];
-			if (isset($result['error'])) {
-				switch ($result['error']) {
-					case "InvalidDataKey":
-						$this->existsInvalidDataKey = true;
-						break;
-					case "MismatchSenderId":
-						$this->existsMismatchSenderId = true;
-						break;
-					default:
-						break;
-				}
-			}
-			$this->results[$registrationId] = $result; 
+            $result = $data['results'][$key];
+       	    if (isset($result['error'])) {
+	        switch ($result['error']) {
+		    case "InvalidDataKey":
+		        $this->existsInvalidDataKey = true;
+			break;
+		    case "MismatchSenderId":
+		        $this->existsMismatchSenderId = true;
+			break;
+		    default:
+		        break;
+	        }
+	    }
+	    $this->results[$registrationId] = $result; 
         }
-		$result = null;
+        $result = null;
     }
     
     public function getResponseHeaders() {
@@ -161,12 +161,12 @@ class Response
     }
 	
     public function getExistsInvalidDataKey()
-	{
+    {
         return $this->existsInvalidDataKey;
     }
 	
     public function getExistsMismatchSenderId()
-	{
+    {
         return $this->existsMismatchSenderId;
     }
 
@@ -284,25 +284,3 @@ class Response
         return array_keys($filteredResults);
     }
 }
-
-/*
-Copyright (c) 2014 Vladimir Savenkov
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
