@@ -59,7 +59,7 @@ try {
             throw new Exception($error_msg, Exception::MISMATCH_SENDER_ID);
         } 
     
-        $invalidRegistrationIds = $GCMresponse->getInvalidRegistrationIds();
+        $invalidRegistrationIds = $response->getInvalidRegistrationIds();
         foreach($invalidRegistrationIds as $invalidRegistrationId) {
             //Remove $invalidRegistrationId from DB
             //TODO
@@ -132,7 +132,7 @@ try {
             throw new Exception($error_msg, Exception::MISMATCH_SENDER_ID);
         } 
     
-        $invalidRegistrationIds = $GCMresponse->getInvalidRegistrationIds();
+        $invalidRegistrationIds = $response->getInvalidRegistrationIds();
         foreach($invalidRegistrationIds as $invalidRegistrationId) {
             //Remove $invalidRegistrationId from DB
             //TODO
