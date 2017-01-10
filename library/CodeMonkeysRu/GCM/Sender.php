@@ -76,7 +76,7 @@ class Sender
         if (count($message->getRegistrationIds()) > 1000) {
             throw new Exception("Malformed request: Registration Ids exceed the GCM imposed limit of 1000", Exception::MALFORMED_REQUEST);
         }
-        
+
         $rawData = $this->formMessageData($message);
         $this->validatePayloadSize($rawData, 'data', 4096);
         $this->validatePayloadSize($rawData, 'notification', 2048);
@@ -124,7 +124,7 @@ class Sender
         $resultHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         curl_close($ch);
-        
+
         switch ($resultHttpCode) {
             case "200":
                 //All fine. Continue response processing.
@@ -143,7 +143,7 @@ class Sender
                 throw new Exception("Unknown error. ".$resultBody, Exception::UNKNOWN_ERROR);
                 break;
         }
-        
+
         return new Response($message, $resultBody, $responseHeaders);
     }
 
@@ -179,7 +179,7 @@ class Sender
 
         return $data;
     }
-	
+
     /**
      * Validate size of json representation of passed payload
      *
