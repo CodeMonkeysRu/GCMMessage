@@ -1,6 +1,9 @@
 <?php
 namespace CodeMonkeysRu\GCM;
 
+/**
+* @author Vladimir Savenkov <ivariable@gmail.com>
+*/
 class Response
 {
 
@@ -153,7 +156,7 @@ class Response
     {
         return $this->success;
     }
-    
+
     public function getFailureCount() //both implementation errors and server errors are included here.
     {
         return $this->failure;
@@ -173,12 +176,12 @@ class Response
     {
         return $this->canonicalIds;
     }
-    
+
     public function getResults()
     {
         return $this->results;
     }
-        
+
     /**
      * Return an array of expired registration ids linked to new id
      * All old registration ids must be updated to new ones in DB

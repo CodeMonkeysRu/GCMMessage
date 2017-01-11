@@ -79,7 +79,7 @@ class Sender
                 Exception::MALFORMED_REQUEST
             );
         }
-        
+
         $rawData = $this->formMessageData($message);
         $this->validatePayloadSize($rawData, 'data', 4096);
         $this->validatePayloadSize($rawData, 'notification', 2048);
@@ -104,7 +104,7 @@ class Sender
         } else {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         }
-        
+
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
         $resp = curl_exec($ch);
@@ -118,7 +118,7 @@ class Sender
         // $resultBody is the body of the HTTP response
 
         $responseHeaders = explode("\n", $responseHeaders);
-        
+
         $resultHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         curl_close($ch);
@@ -141,7 +141,7 @@ class Sender
                 throw new Exception("Unknown error. ".$resultBody, Exception::UNKNOWN_ERROR);
                 break;
         }
-        
+
         return new Response($message, $resultBody, $responseHeaders);
     }
 
@@ -177,7 +177,7 @@ class Sender
 
         return $data;
     }
-    
+
     /**
      * Validate size of json representation of passed payload
      *
