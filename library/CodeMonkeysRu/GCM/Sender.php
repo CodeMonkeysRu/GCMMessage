@@ -122,7 +122,7 @@ class Sender
         $resultHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         curl_close($ch);
-        
+
         switch ($resultHttpCode) {
             case "200":
                 //All fine. Continue response processing.

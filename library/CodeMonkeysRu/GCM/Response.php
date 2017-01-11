@@ -2,8 +2,8 @@
 namespace CodeMonkeysRu\GCM;
 
 /**
-* @author Vladimir Savenkov <ivariable@gmail.com>
-*/
+ * @author Vladimir Savenkov <ivariable@gmail.com>
+ */
 class Response
 {
 
