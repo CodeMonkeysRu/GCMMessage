@@ -49,13 +49,13 @@ try {
     
         if ($response->getExistsInvalidDataKey()) {
             //You used a reserved data key
-            $error_msg = 'Invalid data key in payload. ' . json_encode($message->getNotification());
+	        $error_msg = 'Invalid data key in payload. ' . json_encode($message->getNotification());
             throw new Exception($error_msg, Exception::INVALID_DATA_KEY);
         }
         
         if ($response->getExistsMismatchSenderId()) {
             //A client sent the wrong senderId when it registered for pushes
-            $error_msg = 'Mismatch senderId. Problem clients are '
+	        $error_msg = 'Mismatch senderId. Problem clients are '
                 . json_encode($response->getMismatchSenderIdIds());
             throw new Exception($error_msg, Exception::MISMATCH_SENDER_ID);
         } 
@@ -79,7 +79,6 @@ try {
         case GCM\Exception::UNKNOWN_ERROR:
         case GCM\Exception::MALFORMED_RESPONSE:
         case GCM\Exception::INVALID_DATA_KEY: //you used a forbidden key in the notification
-        case GCM\Exception::CURL_ERROR: //problem posting to gcm server
         case GCM\Exception::MISMATCH_SENDER_ID; //a client sent the wrong senderId when it registered for pushes
             //Deal with it
             break;
@@ -121,7 +120,7 @@ try {
     
         if ($response->getExistsInvalidDataKey()) {
             //You used a reserved data key
-            $error_msg = 'Invalid data key in payload. ' . json_encode($message->getNotification());
+	        $error_msg = 'Invalid data key in payload. ' . json_encode($message->getNotification());
             throw new Exception($error_msg, Exception::INVALID_DATA_KEY);
         }
         
@@ -151,7 +150,6 @@ try {
         case GCM\Exception::UNKNOWN_ERROR:
         case GCM\Exception::MALFORMED_RESPONSE:
         case GCM\Exception::INVALID_DATA_KEY: //you used a forbidden key in the notification
-        case GCM\Exception::CURL_ERROR: //problem posting to gcm server
         case GCM\Exception::MISMATCH_SENDER_ID; //a client sent the wrong senderId when it registered for pushes
             //Deal with it
             break;
