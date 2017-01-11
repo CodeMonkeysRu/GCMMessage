@@ -8,6 +8,8 @@ namespace CodeMonkeysRu\GCM;
  */
 class Message
 {
+    const PRIORITY_NORMAL = 'normal';
+    const PRIORITY_HIGH   = 'high';
 
     /**
      * A string array with the list of devices (registration IDs) receiving the message.
@@ -109,7 +111,7 @@ class Message
      *
      * @var string
      */
-    private $priority = 'normal';
+    private $priority = self::PRIORITY_NORMAL;
 
     /**
      * Allows developers to test their request without actually sending a message.
@@ -245,9 +247,15 @@ class Message
 
     public function setPriority($priority)
     {
-        if (in_array($priority, array('high', 'normal'), true)) {
-            $this->priority = $priority;
+        $allowedPriorities = array(self::PRIORITY_HIGH, self::PRIORITY_NORMAL);
+
+        if (!in_array($priority, $allowedPriorities, true)) {
+            throw new \InvalidArgumentException(
+                'Invalid priority "' . $priority . '", allowed are only these: ' . implode(', ', $allowedPriorities)
+            );
         }
+
+        $this->priority = $priority;
         return $this;
     }
 }
