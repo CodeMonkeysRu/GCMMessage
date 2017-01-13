@@ -27,6 +27,7 @@ $message
     ->setTtl(123)
     ->setRestrictedPackageName("com.example.trololo")
     ->setDryRun(true)
+    ->setPriority(GCM\MessageMessage::PRIORITY_HIGH)
 ;
 
 try {
@@ -132,6 +133,7 @@ $sender = new GCM\Sender("YOUR GOOGLE API KEY", false, "/path/to/cacert.crt");
 
 ChangeLog
 ----------------------
+* v0.5 - Added support for "priority" flag (https://github.com/CodeMonkeysRu/GCMMessage/pull/16)
 * v0.4 - Code cleanup, PHP5.5 support dropped
 * v0.3 - Content-available added (https://github.com/CodeMonkeysRu/GCMMessage/pull/11)
 * v0.2 - Notifications added

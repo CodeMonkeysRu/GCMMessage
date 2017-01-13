@@ -8,6 +8,8 @@ namespace CodeMonkeysRu\GCM;
  */
 class Message
 {
+    const PRIORITY_NORMAL = 'normal';
+    const PRIORITY_HIGH   = 'high';
 
     /**
      * A string array with the list of devices (registration IDs) receiving the message.
@@ -95,6 +97,21 @@ class Message
      * @var bool
      */
     private $contentAvailable = true;
+
+    /**
+     * Sets the priority of the message. Valid values are "normal" and "high." On iOS, these
+     * correspond to APNs priority 5 and 10. By default, messages are sent with normal
+     * priority. Normal priority optimizes the client app's battery consumption, and should
+     * be used unless immediate delivery is required. For messages with normal priority, the
+     * app may receive the message with unspecified delay.
+     * When a message is sent with high priority, it is sent immediately, and the app can wake
+     * a sleeping device and open a network connection to your server.
+     *
+     * Optional.
+     *
+     * @var string
+     */
+    private $priority = self::PRIORITY_NORMAL;
 
     /**
      * Allows developers to test their request without actually sending a message.
@@ -220,6 +237,25 @@ class Message
     public function setContentAvailable($contentAvailable)
     {
         $this->contentAvailable = $contentAvailable;
+        return $this;
+    }
+
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    public function setPriority($priority)
+    {
+        $allowedPriorities = array(self::PRIORITY_HIGH, self::PRIORITY_NORMAL);
+
+        if (!in_array($priority, $allowedPriorities, true)) {
+            throw new \InvalidArgumentException(
+                'Invalid priority "' . $priority . '", allowed are only these: ' . implode(', ', $allowedPriorities)
+            );
+        }
+
+        $this->priority = $priority;
         return $this;
     }
 }
