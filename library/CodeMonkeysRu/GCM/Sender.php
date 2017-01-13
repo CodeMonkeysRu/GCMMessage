@@ -156,6 +156,7 @@ class Sender
             'restricted_package_name' => 'getRestrictedPackageName',
             'dry_run' => 'getDryRun',
             'content_available' => 'getContentAvailable',
+            'priority' => 'getPriority',
         );
 
         foreach ($dataFields as $fieldName => $getter) {
