@@ -96,7 +96,7 @@ class Response
         $this->mustRetry = false;
             
         foreach ($responseHeaders as $header) {
-            if (strpos($header, 'Retry-After') !== false) {
+            if (strpos($header, 'Retry-After:') !== false) {
                 $this->mustRetry = true;
                 $this->waitSeconds = (int) explode(" ", $header)[1];
                 break;
