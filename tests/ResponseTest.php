@@ -12,12 +12,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
      */
     private $responseOK;
     private $responseHeadersOK;
-
-    private $responseMustRetry;
-    private $responseHeadersMustRetry;
-    
     private $responseInvalidDataKey;
-    private $responseHeadersInvalidDataKey;
 
     protected function setUp()
     {
