@@ -117,7 +117,7 @@ class Sender
         // $headers now has a string of the HTTP headers
         // $resultBody is the body of the HTTP response
 
-        $responseHeaders = explode("\n", $responseHeaders);
+        $responseHeaders = explode("\r\n", $responseHeaders);
 
         $resultHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
