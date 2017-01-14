@@ -130,16 +130,26 @@ class Sender
 
         case "400":
             throw new Exception('Malformed request. '.$resultBody, Exception::MALFORMED_REQUEST);
-                break;
+                    break;
 
         case "401":
             throw new Exception('Authentication Error. '.$resultBody, Exception::AUTHENTICATION_ERROR);
-                break;
+                    break;
 
         default:
-            //TODO: Retry-after
-            throw new Exception("Unknown error. ".$resultBody, Exception::UNKNOWN_ERROR);
-                break;
+            $E = new Exception("Unknown error. ".json_encode($responseHeaders)."\n".$resultBody, Exception::UNKNOWN_ERROR);
+    
+            foreach ($responseHeaders as $header) {
+                if (strpos($header, 'Retry-After:') !== false) {
+                     $E->setMustRetry(true);
+                     $E->setWaitSeconds((int) explode(" ", $header)[1]);
+                    break;
+                }
+            }
+    
+            throw $E;
+        //TODO: Retry-after
+        break;
         }
 
         return new Response($message, $resultBody, $responseHeaders);
