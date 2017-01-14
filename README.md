@@ -73,7 +73,7 @@ try {
                 $waitSeconds = $e->getWaitSeconds();
                 //retry in that many seconds, and use exponential back-off subsequently.
                 //TODO
-				break;
+                break;
             }
         case GCM\Exception::ILLEGAL_API_KEY:
         case GCM\Exception::AUTHENTICATION_ERROR:
@@ -145,7 +145,7 @@ try {
                 $waitSeconds = $e->getWaitSeconds();
                 //retry in that many seconds, and use exponential back-off subsequently.
                 //TODO
-				break;
+                break;
             }
         case GCM\Exception::ILLEGAL_API_KEY:
         case GCM\Exception::AUTHENTICATION_ERROR:
