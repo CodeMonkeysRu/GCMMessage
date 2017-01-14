@@ -43,20 +43,6 @@ class Response
     private $responseHeaders = [];
     
     /**
-     * Did Google demand that we try again.
-     *
-     * @var boolean
-     */
-    private $mustRetry = false;
-    
-    /**
-     * Number of seconds to wait.
-     *
-     * @var integer
-     */
-    private $waitSeconds = null;
-    
-    /**
      * Did you use a reserved data key?
      *
      * @var boolean
@@ -93,19 +79,10 @@ class Response
     public function __construct(Message $message, $responseBody, $responseHeaders)
     {
         $this->responseHeaders = $responseHeaders;
-        $this->mustRetry = false;
-            
-        foreach ($responseHeaders as $header) {
-            if (strpos($header, 'Retry-After:') !== false) {
-                $this->mustRetry = true;
-                $this->waitSeconds = (int) explode(" ", $header)[1];
-                break;
-            }
-        }
             
         $data = \json_decode($responseBody, true);
         if ($data === null) {
-            throw new Exception("Malformed reponse body. ". $responseBody, Exception::MALFORMED_RESPONSE);
+            throw new Exception("Malformed reponse body. ".json_encode($responseHeaders).$responseBody, Exception::MALFORMED_RESPONSE);
         }
         $this->multicastId = $data['multicast_id'];
         $this->failure = $data['failure'];
@@ -114,17 +91,17 @@ class Response
         $this->existsInvalidDataKey = false;
         $this->existsMismatchSenderId = false;
         $this->results = array();
-        
+    
         foreach ($message->getRegistrationIds() as $key => $registrationId) {
             $result = $data['results'][$key];
             if (isset($result['error'])) {
                 switch ($result['error']) {
-                    case "InvalidDataKey":
-                        $this->existsInvalidDataKey = true;
-                        break;
-                    case "MismatchSenderId":
-                        $this->existsMismatchSenderId = true;
-                        break;
+                case "InvalidDataKey":
+                    $this->existsInvalidDataKey = true;
+                    break;
+                case "MismatchSenderId":
+                    $this->existsMismatchSenderId = true;
+                    break;
                 }
             }
             $this->results[$registrationId] = $result;
@@ -140,16 +117,6 @@ class Response
     public function getMulticastId()
     {
         return $this->multicastId;
-    }
-    
-    public function getMustRetry()
-    {
-        return $this->mustRetry;
-    }
-    
-    public function getWaitSeconds()
-    {
-        return $this->waitSeconds;
     }
 
     public function getSuccessCount()
@@ -205,9 +172,11 @@ class Response
             }
         );
 
-        $data = array_map(function ($result) {
+        $data = array_map(
+            function ($result) {
                 return $result['registration_id'];
-        }, $filteredResults);
+            }, $filteredResults
+        );
 
         return $data;
     }

@@ -113,8 +113,8 @@ class Message
     /**
      * Set multiple fields at once.
      *
-     * @param string[] $registrationIds
-     * @param array|null $data
+     * @param string[]    $registrationIds
+     * @param array|null  $data
      * @param string|null $collapseKey
      */
     public function bulkSet($registrationIds = array(), $data = null, $collapseKey = null)

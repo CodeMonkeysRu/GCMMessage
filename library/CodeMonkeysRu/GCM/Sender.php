@@ -44,8 +44,8 @@ class Sender
     /**
      * Send message to GCM without explicitly created message
      *
-     * @param string[] $registrationIds
-     * @param array|null $data
+     * @param string[]    $registrationIds
+     * @param array|null  $data
      * @param string|null $collapseKey
      *
      * @throws \CodeMonkeysRu\GCM\Exception
@@ -61,7 +61,7 @@ class Sender
     /**
      * Send message to GCM
      *
-     * @param \CodeMonkeysRu\GCM\Message $message
+     * @param  \CodeMonkeysRu\GCM\Message $message
      * @throws \CodeMonkeysRu\GCM\Exception
      * @return \CodeMonkeysRu\GCM\Response
      */
@@ -124,21 +124,21 @@ class Sender
         curl_close($ch);
 
         switch ($resultHttpCode) {
-            case "200":
-                //All fine. Continue response processing.
+        case "200":
+            //All fine. Continue response processing.
+            break;
+
+        case "400":
+            throw new Exception('Malformed request. '.$resultBody, Exception::MALFORMED_REQUEST);
                 break;
 
-            case "400":
-                throw new Exception('Malformed request. '.$resultBody, Exception::MALFORMED_REQUEST);
+        case "401":
+            throw new Exception('Authentication Error. '.$resultBody, Exception::AUTHENTICATION_ERROR);
                 break;
 
-            case "401":
-                throw new Exception('Authentication Error. '.$resultBody, Exception::AUTHENTICATION_ERROR);
-                break;
-
-            default:
-                //TODO: Retry-after
-                throw new Exception("Unknown error. ".$resultBody, Exception::UNKNOWN_ERROR);
+        default:
+            //TODO: Retry-after
+            throw new Exception("Unknown error. ".$resultBody, Exception::UNKNOWN_ERROR);
                 break;
         }
 
@@ -148,7 +148,7 @@ class Sender
     /**
      * Form raw message data for sending to GCM
      *
-     * @param \CodeMonkeysRu\GCM\Message $message
+     * @param  \CodeMonkeysRu\GCM\Message $message
      * @return array
      */
     private function formMessageData(Message $message)
@@ -181,9 +181,9 @@ class Sender
     /**
      * Validate size of json representation of passed payload
      *
-     * @param array $rawData
-     * @param string $fieldName
-     * @param int $maxSize
+     * @param  array  $rawData
+     * @param  string $fieldName
+     * @param  int    $maxSize
      * @throws \CodeMonkeysRu\GCM\Exception
      * @return void
      */
