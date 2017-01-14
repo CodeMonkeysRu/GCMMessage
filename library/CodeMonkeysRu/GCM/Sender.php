@@ -130,11 +130,11 @@ class Sender
 
         case "400":
             throw new Exception('Malformed request. '.$resultBody, Exception::MALFORMED_REQUEST);
-                    break;
+            break;
 
         case "401":
             throw new Exception('Authentication Error. '.$resultBody, Exception::AUTHENTICATION_ERROR);
-                    break;
+            break;
 
         default:
             $E = new Exception("Unknown error. ".json_encode($responseHeaders)."\n".$resultBody, Exception::UNKNOWN_ERROR);
@@ -148,8 +148,8 @@ class Sender
             }
     
             throw $E;
-        //TODO: Retry-after
-        break;
+            //TODO: Retry-after
+            break;
         }
 
         return new Response($message, $resultBody, $responseHeaders);
