@@ -31,12 +31,6 @@ $message
 try {
     $response = $sender->send($message);
 
-    if ($response->getMustRetry() {
-        $waitSeconds = $response->getWaitSeconds();
-        //Try again after that many seconds, and use exponential backoff subsequently, as needed.
-        //TODO
-    }
-
     if ($response->getNewRegistrationIdsCount() > 0) {
         $newRegistrationIds = $response->getNewRegistrationIds();
         foreach ($newRegistrationIds as $oldRegistrationId => $newRegistrationId){
@@ -73,10 +67,17 @@ try {
 } catch (GCM\Exception $e) {
 
     switch ($e->getCode()) {
+        
+        case GCM\Exception::UNKNOWN_ERROR:
+            if ($e->getMustRetry()) {
+                $waitSeconds = $e->getWaitSeconds();
+                //retry in that many seconds, and use exponential back-off subsequently.
+                //TODO
+				break;
+            }
         case GCM\Exception::ILLEGAL_API_KEY:
         case GCM\Exception::AUTHENTICATION_ERROR:
-        case GCM\Exception::MALFORMED_REQUEST:
-        case GCM\Exception::UNKNOWN_ERROR:
+        case GCM\Exception::MALFORMED_REQUEST:	
         case GCM\Exception::MALFORMED_RESPONSE:
         case GCM\Exception::INVALID_DATA_KEY: //you used a forbidden key in the notification
         case GCM\Exception::MISMATCH_SENDER_ID; //a client sent the wrong senderId when it registered for pushes
@@ -101,12 +102,6 @@ try {
         array("data1" => "123", "data2" => "string"),
         "collapse_key"
     );
-
-    if ($response->getMustRetry() {
-        $waitSeconds = $response->getWaitSeconds();
-        //Try again after that many seconds, and use exponential backoff subsequently, as needed.
-        //TODO
-    }
 
     if ($response->getNewRegistrationIdsCount() > 0) {
         $newRegistrationIds = $response->getNewRegistrationIds();
@@ -144,10 +139,17 @@ try {
 } catch (GCM\Exception $e) {
 
     switch ($e->getCode()) {
+        
+        case GCM\Exception::UNKNOWN_ERROR:
+            if ($e->getMustRetry()) {
+                $waitSeconds = $e->getWaitSeconds();
+                //retry in that many seconds, and use exponential back-off subsequently.
+                //TODO
+				break;
+            }
         case GCM\Exception::ILLEGAL_API_KEY:
         case GCM\Exception::AUTHENTICATION_ERROR:
-        case GCM\Exception::MALFORMED_REQUEST:
-        case GCM\Exception::UNKNOWN_ERROR:
+        case GCM\Exception::MALFORMED_REQUEST:	
         case GCM\Exception::MALFORMED_RESPONSE:
         case GCM\Exception::INVALID_DATA_KEY: //you used a forbidden key in the notification
         case GCM\Exception::MISMATCH_SENDER_ID; //a client sent the wrong senderId when it registered for pushes
