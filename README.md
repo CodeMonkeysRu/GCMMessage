@@ -20,7 +20,7 @@ $message = new GCM\Message(
 );
 
 $message
-    ->notification(array("title" => "foo", "body" => "bar"))
+    ->setNotification(array("title" => "foo", "body" => "bar"))
     ->setCollapseKey("collapse_key")
     ->setDelayWhileIdle(true)
     ->setTtl(123)
