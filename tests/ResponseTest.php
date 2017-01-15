@@ -60,7 +60,11 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
             ]
           }';
           
-        $this->responseInvalidDataKey = new \CodeMonkeysRu\GCM\Response($messageInvalidDataKey, $responseBodyInvalidDataKey, $responseHeadersOK);
+        $this->responseInvalidDataKey = new \CodeMonkeysRu\GCM\Response(
+            $messageInvalidDataKey,
+            $responseBodyInvalidDataKey,
+            $responseHeadersOK
+        );
     }
 
     public function testGetResponseHeaders()
@@ -83,24 +87,20 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(2), $this->responseOK->getUnavailableRegistrationIds());
     }
     
-    public function testGetExistsMismatchSenderIdYes()
+    public function testGetExistsMismatchSenderId()
     {
-        $this->assertEquals(true, $this->responseOK->getExistsMismatchSenderId());
-    }
-    public function testGetExistsMismatchSenderIdNo()
-    {
+        $this->assertEquals(true, $this->responseOK->getExistsMismatchSenderId())
+        &&
         $this->assertEquals(false, $this->responseInvalidDataKey->getExistsMismatchSenderId());
     }
     public function testGetMismatchSenderIdIds()
     {
         $this->assertEquals(array(7), $this->responseOK->getMismatchSenderIdIds());
     }
-    public function testGetExistsInvalidDataKeyYes()
+    public function testGetExistsInvalidDataKey()
     {
-        $this->assertEquals(true, $this->responseInvalidDataKey->getExistsInvalidDataKey());
-    }
-    public function testGetExistsInvalidDataKeyNo()
-    {
+        $this->assertEquals(true, $this->responseInvalidDataKey->getExistsInvalidDataKey())
+        &&
         $this->assertEquals(false, $this->responseOK->getExistsInvalidDataKey());
     }
 }

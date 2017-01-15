@@ -29,6 +29,6 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
 
     public function testGetWaitSeconds()
     {
-        $this->assertEquals(120, $this->exception->getWaitSeconds();
+        $this->assertEquals(120, $this->exception->getWaitSeconds());
     }
 }
