@@ -124,32 +124,35 @@ class Sender
         curl_close($ch);
 
         switch ($resultHttpCode) {
-        case "200":
-            //All fine. Continue response processing.
-            break;
+            case "200":
+                //All fine. Continue response processing.
+                break;
 
-        case "400":
-            throw new Exception('Malformed request. '.$resultBody, Exception::MALFORMED_REQUEST);
-            break;
+            case "400":
+                throw new Exception('Malformed request. '.$resultBody, Exception::MALFORMED_REQUEST);
+                break;
 
-        case "401":
-            throw new Exception('Authentication Error. '.$resultBody, Exception::AUTHENTICATION_ERROR);
-            break;
+            case "401":
+                throw new Exception('Authentication Error. '.$resultBody, Exception::AUTHENTICATION_ERROR);
+                break;
 
-        default:
-            $E = new Exception("Unknown error. ".json_encode($responseHeaders)."\n".$resultBody, Exception::UNKNOWN_ERROR);
+            default:
+                $E = new Exception(
+                    "Unknown error. ".json_encode($responseHeaders)."\n".$resultBody,
+                    Exception::UNKNOWN_ERROR
+                );
     
-            foreach ($responseHeaders as $header) {
-                if (strpos($header, 'Retry-After:') !== false) {
-                     $E->setMustRetry(true);
-                     $E->setWaitSeconds((int) explode(" ", $header)[1]);
-                    break;
+                foreach ($responseHeaders as $header) {
+                    if (strpos($header, 'Retry-After:') !== false) {
+                         $E->setMustRetry(true);
+                         $E->setWaitSeconds((int) explode(" ", $header)[1]);
+                        break;
+                    }
                 }
-            }
     
-            throw $E;
-            //TODO: Retry-after
-            break;
+                throw $E;
+                //TODO: Retry-after
+                break;
         }
 
         return new Response($message, $resultBody, $responseHeaders);

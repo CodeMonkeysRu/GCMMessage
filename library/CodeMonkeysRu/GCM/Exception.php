@@ -16,19 +16,19 @@ class Exception extends \Exception
     private $waitSeconds = null;
     
     public function setMustRetry($bool)
-    {    
+    {
         $this->mustRetry = $bool;
     }
     public function getMustRetry()
-    {    
+    {
         return $this->mustRetry;
     }
     public function setWaitSeconds($int)
-    {    
+    {
         $this->waitSeconds = $int;
     }
     public function getWaitSeconds()
-    {    
+    {
         return $this->waitSeconds;
     }
 }

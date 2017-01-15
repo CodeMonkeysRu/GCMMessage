@@ -82,7 +82,10 @@ class Response
             
         $data = \json_decode($responseBody, true);
         if ($data === null) {
-            throw new Exception("Malformed reponse body. ".json_encode($responseHeaders).$responseBody, Exception::MALFORMED_RESPONSE);
+            throw new Exception(
+                "Malformed reponse body. ".json_encode($responseHeaders).$responseBody,
+                Exception::MALFORMED_RESPONSE
+            );
         }
         $this->multicastId = $data['multicast_id'];
         $this->failure = $data['failure'];
@@ -96,12 +99,12 @@ class Response
             $result = $data['results'][$key];
             if (isset($result['error'])) {
                 switch ($result['error']) {
-                case "InvalidDataKey":
-                    $this->existsInvalidDataKey = true;
-                    break;
-                case "MismatchSenderId":
-                    $this->existsMismatchSenderId = true;
-                    break;
+                    case "InvalidDataKey":
+                        $this->existsInvalidDataKey = true;
+                        break;
+                    case "MismatchSenderId":
+                        $this->existsMismatchSenderId = true;
+                        break;
                 }
             }
             $this->results[$registrationId] = $result;
@@ -175,7 +178,8 @@ class Response
         $data = array_map(
             function ($result) {
                 return $result['registration_id'];
-            }, $filteredResults
+            },
+            $filteredResults
         );
 
         return $data;
